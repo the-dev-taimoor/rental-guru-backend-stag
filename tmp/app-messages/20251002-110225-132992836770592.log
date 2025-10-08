@@ -1,0 +1,27 @@
+Content-Type: multipart/alternative;
+ boundary="===============1603046988146318185=="
+MIME-Version: 1.0
+Subject: =?utf-8?q?Rental_Guru_=E2=80=93_KYC_Feedback?=
+From: webmaster@localhost
+To: johndoe@test.com
+Date: Thu, 02 Oct 2025 11:02:25 -0000
+Message-ID: <175940294526.15776.12910927452862880018@taimoors-lenovo-thinkpad>
+
+--===============1603046988146318185==
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+
+
+                        <html>
+                        <body>
+                            <p>Hi John,</p>
+                            <p>This email is in response of your KYC request.</p>
+                            <p>Your request is approved.</p>
+                            <p>Reason: Looks good!</p>
+                        </body>
+                        </html>
+                        
+--===============1603046988146318185==--
+
+-------------------------------------------------------------------------------

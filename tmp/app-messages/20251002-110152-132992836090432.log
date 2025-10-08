@@ -1,0 +1,33 @@
+Content-Type: multipart/alternative;
+ boundary="===============2649551804037300909=="
+MIME-Version: 1.0
+Subject: =?utf-8?q?Rental_Guru_=E2=80=93_Verify_your_account?=
+From: webmaster@localhost
+To: admin@example.com
+Date: Thu, 02 Oct 2025 11:01:52 -0000
+Message-ID: <175940291240.15776.15167166973762230725@taimoors-lenovo-thinkpad>
+
+--===============2649551804037300909==
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+
+
+                        <html>
+                        <body>
+                            <p>Hi ,</p>
+                            <p>We received a request for otp for your Rental Guru account.</p>
+                            <p>To proceed, please use the following One-Time Password (OTP):</p>
+                            <h3 style="font-size: 24px; color: #1a73e8;">7204</h3>
+                            <p>This OTP is valid for 1 minute. Please do not share it with anyone.</p>
+                            <p>If you have any questions or need assistance, please reach out at <a href="mailto:support@rentalguru.app">support@rentalguru.app</a>.</p>
+                            <br>
+                            <p>Thank you for using Rental Guru!</p>
+                            <p>Best Regards,</p>
+                            <p>Rental Guru Team</p>
+                        </body>
+                        </html>
+                        
+--===============2649551804037300909==--
+
+-------------------------------------------------------------------------------

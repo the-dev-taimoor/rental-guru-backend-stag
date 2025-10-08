@@ -1,0 +1,53 @@
+name: Docker Build and Run Staging
+
+on:
+    push:
+        branches:
+            - stag
+
+jobs:
+    docker-job:
+        runs-on: api-dev
+
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Create env file
+              run: |
+                  cat > .env << EOF
+                  ${{ vars.ENV_STAGE }}
+                  EOF
+
+            # - name: Stop and remove existing containers (only if running)
+            #   run: |
+            #       if [ "$(docker ps -q)" ]; then
+            #         echo "Containers are running. Stopping and removing them..."
+            #         docker-compose -f docker-compose-stag.yaml down || true
+            #         docker system prune -f
+            #       else
+            #         echo "No running containers. Skipping stop and prune."
+            #       fi
+
+            # - name: Start services with Docker Compose
+            #   run: docker-compose -f docker-compose-stag.yaml up -d --build
+
+            # - name: Show container logs
+            #   run: |
+            #       sleep 30
+            #       docker-compose -f docker-compose-stag.yaml logs stag-api
+
+            # - name: Clean up unused resources
+            #   run: docker system prune -f
+
+            - name: Stop and remove only stag-api container
+              run: |
+                docker-compose -f docker-compose-stag.yaml stop stag-api || true
+                docker-compose -f docker-compose-stag.yaml rm -f stag-api || true
+        
+            - name: Build and start only stag-api
+              run: docker-compose -f docker-compose-stag.yaml up -d --build stag-api
+        
+            - name: Show stag-api container logs
+              run: |
+                sleep 30
+                docker-compose -f docker-compose-stag.yaml logs stag-api

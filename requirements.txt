@@ -1,0 +1,14 @@
+Django==4.2.20
+djangorestframework==3.16.0
+Pillow==11.2.1
+drf_yasg==1.21.10
+django-rest-swagger==2.2.0
+djangorestframework-simplejwt==5.5.0
+psycopg2-binary==2.9.10
+python-dotenv==1.1.0
+django-cors-headers==4.7.0
+django-storages==1.14.6
+boto3==1.38.23
+django-filter==25.1
+pandas==2.3.0
+openpyxl==3.1.5

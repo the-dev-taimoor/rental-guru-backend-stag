@@ -1,0 +1,105 @@
+cost_fee_options = {
+    "others": {
+        "parking": ["reserved_parking", "street_parking", "garage", "covered_parking", "uncovered_parking"],
+        "utilities": ["electricity", "water", "gas", "trash", "internet", "sewer", "cable"],
+        "add_on": ["smart_home_fee", "smart_lock_fee", "solar_home_fee", "community_fee", "electric_vehicle_charging_fee",
+                   "fence_fee", "gym_fee"],
+        "deposits": ["holding_deposit", "last_month_base_rent", "security_deposit_alternative", "tenant_deposit"],
+        "services": ["cleaning_fee", "lawn_maintenance_fee", "pest_control_fee", "pool_maintenance_fee"],
+        "storage": ["bike_storage_fee", "storage_locker_fee"],
+        "technology": ["cable_fee", "internet_fee", "technology_fee"]
+    },
+    "university_housing": {
+        "parking": ["reserved_parking", "student_lot", "bicycle_parking", "garage_parking"],
+        "utilities": ["electricity", "water", "gas", "trash", "internet"],
+        "add_on": ["smart_lock_fee", "meal_plan_add_on", "community_fee", "recreation_center_fee", "gym_fee"],
+        "deposits": ["holding_deposit", "last_month_base_rent", "security_deposit_alternative", "equipment_deposit"],
+        "services": ["cleaning_fee", "laundry_service_fee", "mailroom_service_fee", "health_center_access"],
+        "storage": ["bike_storage_fee", "luggage_locker_fee", "semester_storage"],
+        "technology": ["campus_cable_fee", "internet_fee", "tech_maintenance_fee", "student_portal_access_fee"]
+    }
+}
+
+xlsx_sheet_names = {
+    "others": {
+        "Unit Info": {"Unit Number": "number", "Unit Type": "type", "Floor Number": "floor_number",
+                      "Unit Size (sq.ft.)": "size", "Total Bedrooms": "bedrooms", "Total Bathrooms": "bathrooms"},
+        "Photos": {"Unit Number": "number", "Photo Link": "photo"},
+        "Rent Details": {"Unit Number": "number", "Short Term": "short_term", "Long Term": "long_term", "Rent": "rent",
+                         "Security Deposit": "security_deposit"},
+        "Amenities": {"Unit Number": "number", "Amenities (comma-separated)": "sub_amenities"},
+        "Cost Fee": {"Unit Number": "number", "Category": "category_name", "Fee Name": "fee_name",
+                     "Payment Frequency is One Time": "one_time",
+                     "Payment Frequency is Monthly": "monthly",
+                     "Payment Frequency is Per Use": "per_use",
+                     "Fee Amount": "fee_amount",
+                     "Flat Fee": "flat_fee", "Flat Fee Per Item": "flat_fee_per_item", "Fee Range": "fee_range",
+                     "Fee Included in Base Rent": "in_rent", "Fee Required": "required",
+                     "Fee Optional": "optional", "Fee Non-Refundable": "non_refundable",
+                     "Fee Partially Refundable": "partially_refundable", "Fee Refundable": "refundable"},
+        "Document": {"Unit Number": "number", "Upload Document": "documents", "Document Title": "title",
+                     "Document Type": "document_type", "Private": "private", "Shared with Tenant": "shared"}
+    },
+    "university_housing": {
+        "Room Details": {"Room Number": "number", "Room Type": "type", "Floor Number": "floor_number",
+                      "Room Size (sq.ft.)": "size", "Total Beds": "beds", "Total Desks": "desks"},
+        "Photos": {"Room Number": "number", "Photo Link": "photo"},
+        "Rent Details": {"Room Number": "number", "Monthly Billing": "monthly_billing",
+                         "Semester Billing": "semester_billing", "Fall Semester": "fall_semester",
+                         "Spring Semester": "spring_billing", "Summer Semester": "summer_billing", "Rent": "rent",
+                         "Security Deposit": "security_deposit"},
+        "Amenities": {"Room Number": "number", "Amenities (comma-separated)": "sub_amenities"},
+        "Cost Fee": {"Room Number": "number", "Category": "category_name", "Fee Name": "fee_name",
+                     "Payment Frequency is One Time": "one_time",
+                     "Payment Frequency is Monthly": "monthly",
+                     "Payment Frequency is Quarterly": "quarterly",
+                     "Payment Frequency is Yearly": "yearly",
+                     "Payment Frequency is Per Use": "per_use",
+                     "Fee Amount": "fee_amount",
+                     "Flat Fee": "flat_fee", "Flat Fee Per Item": "flat_fee_per_item", "Fee Range": "fee_range",
+                     "Fee Included in Base Rent": "in_rent", "Fee Required": "required",
+                     "Fee Optional": "optional", "Fee Non-Refundable": "non_refundable",
+                     "Fee Partially Refundable": "partially_refundable", "Fee Refundable": "refundable"},
+        "Document": {"Room Number": "number", "Upload Document": "documents", "Document Title": "title",
+                     "Document Type": "document_type", "Private": "private", "Shared with Tenant": "shared"}
+    }
+}
+
+# Define all column mappings and transformations in one place
+COLUMN_CONFIG = {
+    "rent_details": {
+        "fields": {
+            "short_term": ("rental_type", "short_term"),
+            "long_term": ("rental_type", "long_term"),
+            "monthly_billing": ("rental_type", "monthly_billing"),
+            "semester_billing": ("rental_type", "semester_billing"),
+            "fall_semester": ("semester", "fall"),
+            "spring_semester": ("semester", "spring"),
+            "summer_semester": ("semester", "summer"),
+        }
+    },
+    "document": {
+        "fields": {
+            "private": ("visibility", "private"),
+            "shared": ("visibility", "shared")
+        }
+    },
+    "cost_fee": {
+        "fields": {
+            "one_time": ("payment_frequency", "one_time"),
+            "monthly": ("payment_frequency", "monthly"),
+            "per_use": ("payment_frequency", "per_use"),
+            "quarterly": ("payment_frequency", "quarterly"),
+            "yearly": ("payment_frequency", "yearly"),
+            "flat_fee": ("fee_type", "flat_fee"),
+            "flat_fee_per_item": ("fee_type", "flat_fee_per_item"),
+            "fee_range": ("fee_type", "fee_range"),
+            "required": ("is_required", "required"),
+            "in_rent": ("is_required", "in_rent"),
+            "optional": ("is_required", "optional"),
+            "non_refundable": ("refundable_status", "non_refundable"),
+            "partially_refundable": ("refundable_status", "partially_refundable"),
+            "refundable": ("refundable_status", "refundable")
+        }
+    }
+}

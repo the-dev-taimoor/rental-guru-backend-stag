@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  qa-api:
+    build:
+      context: .
+    ports:
+      - 8001:8000
+    networks:
+      - rental-guru-backend_rental-guru-backend-network
+
+networks:
+  rental-guru-backend_rental-guru-backend-network:
+    external: true

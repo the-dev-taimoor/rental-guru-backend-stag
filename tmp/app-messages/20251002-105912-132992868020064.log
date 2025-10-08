@@ -1,0 +1,32 @@
+Content-Type: multipart/alternative;
+ boundary="===============7506105992130205742=="
+MIME-Version: 1.0
+Subject: =?utf-8?q?Rental_Guru_=E2=80=93_Verify_Your_Email_Address?=
+From: webmaster@localhost
+To: johndoe@test.com
+Date: Thu, 02 Oct 2025 10:59:12 -0000
+Message-ID: <175940275263.15776.10557292268717462926@taimoors-lenovo-thinkpad>
+
+--===============7506105992130205742==
+Content-Type: text/html; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+
+
+                        <html>
+                        <body>
+                            <p>Hi John,</p>
+                            <p>Thank you for signing up with Rental Guru!</p>
+                            <p>To complete your registration, please verify your email address by entering the following One-Time Password (OTP) in the required field:</p>
+                            <h3 style="font-size: 24px; color: #1a73e8;">6950</h3>
+                            <p>This OTP is valid for 1 minute. Please do not share it with anyone.</p>
+                            <p>If you didn’t sign up, please ignore this email or contact us at <a href="mailto:support@rentalguru.app">support@rentalguru.app</a>.</p>
+                            <br>
+                            <p>Warm regards,</p>
+                            <p>Rental Guru Team</p>
+                        </body>
+                        </html>
+                        
+--===============7506105992130205742==--
+
+-------------------------------------------------------------------------------

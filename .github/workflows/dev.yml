@@ -1,0 +1,48 @@
+name: Docker Build and Run
+
+on:
+    push:
+        branches:
+            - dev
+
+jobs:
+    docker-job:
+        runs-on: api-dev
+
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Create env file
+              run: |
+                  cat > .env << EOF
+                  ${{ vars.ENV_DEV }}
+                  EOF
+
+            # - name: Stop and remove existing containers (only if running)
+            #   run: |
+            #       if [ "$(docker ps -q)" ]; then
+            #         echo "Containers are running. Stopping and removing them..."
+            #         docker-compose -f docker-compose-dev.yaml down || true
+            #         docker system prune -f
+            #       else
+            #         echo "No running containers. Skipping stop and prune."
+            #       fi
+
+            # - name: Start services with Docker Compose
+            #   run: docker-compose -f docker-compose-dev.yaml up -d --build
+        
+            - name: Stop and remove only dev-api container
+              run: |
+                  docker-compose -f docker-compose-dev.yaml stop dev-api || true
+                  docker-compose -f docker-compose-dev.yaml rm -f dev-api || true
+        
+            - name: Build and start only dev-api
+              run: docker-compose -f docker-compose-dev.yaml up -d --build dev-api
+
+            - name: Show container logs
+              run: |
+                  sleep 30
+                  docker-compose -f docker-compose-dev.yaml logs dev-api
+
+            # - name: Clean up unused resources
+            #   run: docker system prune -f

@@ -1,0 +1,53 @@
+name: Docker Build and Run QA
+
+on:
+    push:
+        branches:
+            - qa
+
+jobs:
+    docker-job:
+        runs-on: api-dev
+
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Create env file
+              run: |
+                  cat > .env << EOF
+                  ${{ vars.ENV_QA }}
+                  EOF
+
+            # - name: Stop and remove existing containers (only if running)
+            #   run: |
+            #       if [ "$(docker ps -q)" ]; then
+            #         echo "Containers are running. Stopping and removing them..."
+            #         docker-compose -f docker-compose-qa.yaml down || true
+            #         docker system prune -f
+            #       else
+            #         echo "No running containers. Skipping stop and prune."
+            #       fi
+
+            # - name: Start services with Docker Compose
+            #   run: docker-compose -f docker-compose-qa.yaml up -d --build
+
+            # - name: Show container logs
+            #   run: |
+            #       sleep 30
+            #       docker-compose -f docker-compose-qa.yaml logs qa-api
+
+            # - name: Clean up unused resources
+            #   run: docker system prune -f
+
+            - name: Stop and remove only qa-api container
+              run: |
+                docker-compose -f docker-compose-qa.yaml stop qa-api || true
+                docker-compose -f docker-compose-qa.yaml rm -f qa-api || true
+            
+            - name: Build and start only qa-api
+              run: docker-compose -f docker-compose-qa.yaml up -d --build qa-api
+            
+            - name: Show qa-api container logs
+              run: |
+                sleep 30
+                docker-compose -f docker-compose-qa.yaml logs qa-api

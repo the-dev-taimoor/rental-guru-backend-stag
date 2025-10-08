@@ -1,0 +1,44 @@
+# Python bytecode files
+__pycache__/
+*.py[cod]
+
+# Django secret key file
+*.env
+
+# Database files
+*.sqlite3
+
+# Media and static files
+media/
+static/
+
+# PyCharm and other IDE-specific files
+.idea/
+
+# VSCode-specific files
+.vscode/
+
+# mypy, pyre, or other static analysis tools
+.mypy_cache/
+.pyre/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# virtual environment
+venv/
+env/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
+# MacOS Finder directory
+.DS_Store
+
+# Windows system files
+Thumbs.db
+ehthumbs.db
+config.json
+
+logs/
