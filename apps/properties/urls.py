@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import (PropertyViewSet, ListingInfoViewSet, RentalDetailViewSet, AmenitiesView, CostFeeViewSet,
+from apps.properties.interface.views import (PropertyViewSet, ListingInfoViewSet, RentalDetailViewSet, AmenitiesView, CostFeeViewSet,
                     PropertyOwnerViewSet, PropertyDocumentViewSet, CalendarSlotViewSet, UnitInfoViewSet,
                     PropertyDocumentViewSet2, PropertyRetrieveViewSet, PropertyMetricsViewSet, UnitSummaryViewSet,
                     PropertyDocumentTypesView, CostFeeTypesView, BulkUnitImportAPIView, DeleteAllPropertiesView,

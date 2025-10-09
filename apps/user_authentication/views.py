@@ -6,7 +6,7 @@ from apps.properties.infrastructure.models import OwnerInfo
 from common.utils import CustomResponse, get_presigned_url, send_email_, unsnake_case
 from common.constants import email_templates, Success, Error
 
-from .serializers import (UserSerializer, CustomTokenObtainPairSerializer, EmailVerifySerializer, OTPCreateSerializer,
+from apps.user_authentication.interface.serializers import (UserSerializer, CustomTokenObtainPairSerializer, EmailVerifySerializer, OTPCreateSerializer,
                           OTPVerifySerializer, OTPEnableSerializer, ResetPasswordSerializer, SelectRoleSerializer,
                           PropertyOwnerProfileSerializer, KYCVerifySerializer, VendorProfileSerializer, KYCRequestSerializer,
                           VendorInvitationSerializer, VendorDetailsByInvitationSerializer, LicenseAndCertificatesSerializer,

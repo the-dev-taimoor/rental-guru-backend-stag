@@ -1,0 +1,37 @@
+from .general import GeneralViewSet
+
+from apps.properties.infrastructure.models import Property, RentDetails
+from apps.properties.interface.serializers import RentDetailsSerializer
+from rest_framework.permissions import IsAuthenticated
+
+from common.utils import CustomResponse
+from common.constants import Success, Error
+from rest_framework.exceptions import NotFound
+
+
+class RentalDetailViewSet(GeneralViewSet):
+    queryset = RentDetails.objects.all()
+    serializer_class = RentDetailsSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_rental_object(self):
+        try:
+            property_instance = Property.objects.get(id=self.kwargs['pk'])
+        except Property.DoesNotExist:
+            raise NotFound(Error.PROPERTY_NOT_FOUND)
+        unit_id = self.kwargs.get('unit', None)
+        try:
+            return RentDetails.objects.get(property_id=property_instance.id, unit_id=unit_id)
+        except RentDetails.DoesNotExist:
+            raise NotFound(Error.RENTAL_DETAIL_NOT_FOUND.format('unit' if unit_id else 'property'))
+
+    # This update is with 'put' method and property id in url
+    def update(self, request, *args, **kwargs):
+        request_data = request.data
+        self.kwargs['unit'] = request_data.get('unit')
+        partial = kwargs.pop('partial', False)
+        instance = self.get_rental_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return CustomResponse({'data': serializer.data, 'message': Success.RENTAL_INFO_UPDATED})
