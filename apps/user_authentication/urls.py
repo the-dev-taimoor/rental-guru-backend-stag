@@ -2,7 +2,7 @@ from django.urls import path
 from django.conf import settings
 from rest_framework.routers import DefaultRouter, SimpleRouter
 
-from .views import (SignupView, CustomTokenObtainPairView, CustomTokenRefreshView, OTPView, OTPVerifyView,
+from apps.user_authentication.interface.views import (SignupView, CustomTokenObtainPairView, CustomTokenRefreshView, OTPView, OTPVerifyView,
                     ForgotPasswordView, ResetPasswordView, LogoutView, PropertyOwnerProfileView, KYCRequests,
                     KYCView, VendorProfileView, KYCRequestDetails, ServiceCategoriesView, ServiceSubCategoriesView,
                     SelectRoleView, VendorInvitationView, VendorRolesView, VendorDetailsByInvitationView,
