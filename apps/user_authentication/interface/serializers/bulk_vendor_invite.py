@@ -3,7 +3,7 @@ import pandas as pd
 from io import BytesIO
 
 from common.utils import snake_case
-from apps.properties.exceptions import CustomValidationError
+from common.exceptions import CustomValidationError
 from apps.user_authentication.infrastructure.models import VendorInvitation
 
 class BulkVendorInviteSerializer(serializers.Serializer):

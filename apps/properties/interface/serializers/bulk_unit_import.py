@@ -4,8 +4,8 @@ from rest_framework import serializers
 from collections import defaultdict
 
 from common.constants import Error
+from common.exceptions import CustomValidationError
 from apps.properties.infrastructure.models import  Property
-from apps.properties.exceptions import CustomValidationError
 from apps.properties.utils import xlsx_sheet_names, COLUMN_CONFIG
 
 from common.utils import snake_case, str_to_bool

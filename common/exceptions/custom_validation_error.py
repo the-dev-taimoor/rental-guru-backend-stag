@@ -1,5 +1,4 @@
 from django.utils.encoding import force_str
-from rest_framework.exceptions import ErrorDetail
 from rest_framework.utils.serializer_helpers import ReturnDict, ReturnList
 from rest_framework.exceptions import ValidationError
 
