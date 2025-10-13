@@ -9,11 +9,11 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 
 from common.constants import Success, Error
+from common.filters import CustomSearchFilter
 from common.utils import CustomResponse, send_email_
 
 from apps.user_authentication.infrastructure.models import Vendor, VendorInvitation
 from apps.user_authentication.interface.serializers import VendorInvitationSerializer
-from apps.properties.filters import CustomSearchFilter
 from apps.user_authentication.application.pagination import VendorInvitationPagination
 
 

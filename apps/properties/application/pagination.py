@@ -1,4 +1,4 @@
-from common.pagination.base import BasePagination
+from common.pagination.base_pagination import BasePagination
 from common.constants import Success
 
 class PropertiesPagination(BasePagination):

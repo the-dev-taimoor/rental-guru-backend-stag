@@ -6,7 +6,7 @@ from apps.properties.application.pagination import PropertiesPagination
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
-from apps.properties.filters import PropertyFilter
+from apps.properties.infrastructure.filters import PropertyFilter
 from rest_framework.decorators import action
 
 from common.utils import CustomResponse

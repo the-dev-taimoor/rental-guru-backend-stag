@@ -9,9 +9,8 @@ from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from django.conf import settings
 
-from apps.properties.filters import CustomSearchFilter
-
 from common.constants import Success, Error
+from common.filters import CustomSearchFilter
 from common.utils import CustomResponse, get_presigned_url, send_email_
 
 from apps.properties.infrastructure.models import Property, Unit

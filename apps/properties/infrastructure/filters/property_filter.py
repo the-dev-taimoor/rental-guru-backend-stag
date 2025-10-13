@@ -1,7 +1,6 @@
 import django_filters
-from apps.properties.infrastructure.models import Property, Unit
+from apps.properties.infrastructure.models import Property
 from django.db.models import Count, Q
-from rest_framework.filters import SearchFilter
 
 
 class PropertyFilter(django_filters.FilterSet):
@@ -52,40 +51,3 @@ class PropertyFilter(django_filters.FilterSet):
             Q(city__icontains=value) |
             Q(state__icontains=value)
         )
-
-
-class UnitFilter(django_filters.FilterSet):
-    published = django_filters.BooleanFilter(field_name='published')
-    q = django_filters.CharFilter(method='filter_q', label='Keyword search')
-
-    class Meta:
-        model = Unit
-        fields = ['published', 'q']
-
-    def filter_q(self, queryset, name, value):
-        return queryset.filter(
-            Q(number__icontains=value) |
-            Q(type__icontains=value) |
-            Q(floor_number__icontains=value) |
-            Q(status__icontains=value) |
-            Q(unit_rent_details__assigned_tenant__icontains=value)
-        )
-
-
-class DocumentFilter(django_filters.FilterSet):
-    q = django_filters.CharFilter(method='filter_q', label='Keyword search')
-
-    class Meta:
-        model = Unit
-        fields = ['q']
-
-    def filter_q(self, queryset, name, value):
-        return queryset.filter(
-            Q(title__icontains=value) |
-            Q(document_type__icontains=value) |
-            Q(visibility__icontains=value) |
-            Q(created_at__icontains=value)
-        )
-
-class CustomSearchFilter(SearchFilter):
-    search_param = 'q'  # Use 'q' instead of 'search'

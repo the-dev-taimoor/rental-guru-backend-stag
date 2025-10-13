@@ -3,11 +3,11 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 
 from common.constants import Success
+from common.filters import CustomSearchFilter
 from common.utils import CustomResponse
 
 from apps.properties.infrastructure.models import Property, Unit
 from apps.properties.interface.serializers import UserPropertyUnitSerializer
-from apps.properties.filters import CustomSearchFilter
 from apps.properties.application.pagination import UserPropertiesAndUnitsPagination
 
 
