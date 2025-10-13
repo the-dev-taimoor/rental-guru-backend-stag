@@ -3,7 +3,7 @@ import json
 
 from apps.properties.infrastructure.models import Property, PropertyDocument, Unit
 from apps.properties.interface.serializers import DocumentCreateSerializer, UploadDocumentFormSerializer, DocumentRetrieveSerializer
-from apps.user_authentication.pagination import DocumentsPagination
+from apps.properties.application.pagination import DocumentsPagination
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter

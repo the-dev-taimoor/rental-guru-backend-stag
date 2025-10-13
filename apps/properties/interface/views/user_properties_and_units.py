@@ -8,7 +8,7 @@ from common.utils import CustomResponse
 from apps.properties.infrastructure.models import Property, Unit
 from apps.properties.interface.serializers import UserPropertyUnitSerializer
 from apps.properties.filters import CustomSearchFilter
-from apps.user_authentication.pagination import UserPropertiesAndUnitsPagination
+from apps.properties.application.pagination import UserPropertiesAndUnitsPagination
 
 
 class UserPropertiesAndUnitsView(APIView):

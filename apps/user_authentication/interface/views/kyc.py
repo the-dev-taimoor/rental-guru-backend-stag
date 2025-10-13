@@ -13,7 +13,7 @@ from common.utils import CustomResponse, get_presigned_url
 
 from apps.user_authentication.infrastructure.models import KYCRequest, Role
 from apps.user_authentication.interface.serializers import KYCVerifySerializer
-from apps.user_authentication.pagination import KYCRequestsPagination
+from apps.user_authentication.application.pagination import KYCRequestsPagination
 
 
 class KYCView(APIView):

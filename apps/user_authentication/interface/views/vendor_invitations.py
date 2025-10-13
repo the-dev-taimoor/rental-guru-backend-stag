@@ -14,7 +14,7 @@ from common.utils import CustomResponse, send_email_
 from apps.user_authentication.infrastructure.models import Vendor, VendorInvitation
 from apps.user_authentication.interface.serializers import VendorInvitationSerializer
 from apps.properties.filters import CustomSearchFilter
-from apps.user_authentication.pagination import VendorInvitationPagination
+from apps.user_authentication.application.pagination import VendorInvitationPagination
 
 
 class VendorInvitationView(APIView):

@@ -17,7 +17,7 @@ from common.utils import CustomResponse, get_presigned_url, send_email_
 from apps.properties.infrastructure.models import Property, Unit
 from apps.user_authentication.infrastructure.models import Agreements, Tenant, TenantInvitation
 from apps.user_authentication.interface.serializers import TenantInvitationSerializer, InvitationAgreementSerializer
-from apps.user_authentication.pagination import TenantInvitationPagination
+from apps.user_authentication.application.pagination import TenantInvitationPagination
 
 
 class TenantInvitationView(APIView):

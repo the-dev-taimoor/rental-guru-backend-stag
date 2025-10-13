@@ -2,7 +2,7 @@ from .general import GeneralViewSet
 
 from apps.properties.infrastructure.models import Property
 from apps.properties.interface.serializers import PropertySerializer
-from apps.user_authentication.pagination import PropertiesPagination
+from apps.properties.application.pagination import PropertiesPagination
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
