@@ -4,7 +4,7 @@ from apps.properties.interface.views import (PropertyViewSet, ListingInfoViewSet
                     PropertyOwnerViewSet, PropertyDocumentViewSet, CalendarSlotViewSet, UnitInfoViewSet,
                     PropertyDocumentViewSet2, PropertyRetrieveViewSet, PropertyMetricsViewSet, UnitSummaryViewSet,
                     PropertyDocumentTypesView, CostFeeTypesView, BulkUnitImportAPIView, DeleteAllPropertiesView,
-                    TopListingsViewSet, UserPropertiesAndUnitsView)
+                    TopListingsViewSet, UserPropertiesAndUnitsView, PublicListingAPIView)
 
 router = DefaultRouter()
 router.register(r'summary', PropertyRetrieveViewSet, basename='property_details')
@@ -38,4 +38,5 @@ urlpatterns = [
 
     # User properties and units list
     path('user-properties-units/', UserPropertiesAndUnitsView.as_view(), name='user_properties_units'),
+    path('public-listings/', PublicListingAPIView.as_view(), name='public_listings'),
 ]
