@@ -258,6 +258,18 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = 'user_authentication.CustomUser'
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+
+# drf-yasg Swagger settings to add Bearer auth in the UI
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header',
+            'description': 'JWT Authorization header using the Bearer scheme. Example: "Bearer <token>"'
+        }
+    }
+}
 EMAIL_FILE_PATH = "./tmp/app-messages"
 # EMAIL_HOST = 'smtp.gmail.com'
 # EMAIL_PORT = 587

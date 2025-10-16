@@ -257,3 +257,15 @@ AWS_DEFAULT_ACL = None
 DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
 
 ENV = env_values["ENV"]
+
+# drf-yasg Swagger settings to add Bearer auth in the UI
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header',
+            'description': 'JWT Authorization header using the Bearer scheme. Example: "Bearer <token>"'
+        }
+    }
+}

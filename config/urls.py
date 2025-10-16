@@ -22,12 +22,13 @@ from django.conf.urls.static import static
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework import permissions
-# Define your schema view
+
+# Define your schema view (keep security definitions in settings via SWAGGER_SETTINGS)
 schema_view = get_schema_view(
     openapi.Info(
-        title="Rental Guru API",
+        title="Project ARII AI API Info",
         default_version='v1',
-        description="API documentation for the Rental Guru platform",
+        description="API documentation for the Project ARII AI platform",
     ),
     public=True,
     permission_classes=[permissions.AllowAny]
