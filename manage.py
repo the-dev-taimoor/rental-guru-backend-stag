@@ -6,7 +6,16 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
+    # Pick settings module based on environment variable.
+    # If ENV (or DJANGO_ENV) == 'production' -> use production settings,
+    # otherwise use local settings. Allows overriding by setting
+    # DJANGO_SETTINGS_MODULE explicitly too.
+    env = os.environ.get('ENV', os.environ.get('DJANGO_ENV', '')).lower()
+    if not os.environ.get('DJANGO_SETTINGS_MODULE'):
+        if env == 'production':
+            os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.production')
+        else:
+            os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.local')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

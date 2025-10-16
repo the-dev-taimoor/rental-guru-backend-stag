@@ -14,6 +14,7 @@ from pathlib import Path
 from datetime import timedelta
 from dotenv import dotenv_values
 import os
+import sys
 
 # Load .env values
 env_values = dotenv_values()
@@ -166,19 +167,43 @@ LOGGING = {
         },
     },
     "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "stream": sys.stdout,
+            "formatter": "detailed",
+        },
         "file": {
             "level": "ERROR",
             "class": "logging.FileHandler",
-            "filename": "logs/error.log",
+            "filename": os.path.join(BASE_DIR, "logs/error.log"),
             "formatter": "detailed",
         },
     },
     "loggers": {
         "django": {
-            "handlers": ["file"],
-            "level": "ERROR",
+            "handlers": ["console", "file"],
+            "level": "DEBUG",  # was ERROR
             "propagate": True,
         },
+        "django.request": {
+            "handlers": ["console", "file"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+        "django.db.backends": {
+            "handlers": ["console"],
+            "level": "INFO",  # set to DEBUG to see SQL queries
+            "propagate": False,
+        },
+        "rest_framework": {
+            "handlers": ["console", "file"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+    },
+    "root": {
+        "handlers": ["console", "file"],
+        "level": "DEBUG",
     },
 }
 
