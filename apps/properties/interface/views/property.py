@@ -46,7 +46,15 @@ class PropertyViewSet(GeneralViewSet):
                         status=status.HTTP_200_OK)
 
     def get_queryset(self):
-        return self.queryset.filter(property_owner=self.request.user)
+        # Skip during Swagger schema generation
+        if getattr(self, 'swagger_fake_view', False):
+            return self.queryset.none()
+
+        user = self.request.user
+        if not user.is_authenticated:
+            return self.queryset.none()
+
+        return self.queryset.filter(property_owner=user)
 
     def get_object(self):
         try:

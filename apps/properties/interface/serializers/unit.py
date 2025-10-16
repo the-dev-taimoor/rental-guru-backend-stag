@@ -8,7 +8,9 @@ from apps.properties.infrastructure.models import RentDetails, Unit, Property, P
 from .property_photo import PropertyPhotoSerializer
 
 class UnitSerializer(serializers.ModelSerializer):
-    photo = PropertyPhotoSerializer(many=True, required=False)
+    # Nested photos should be read-only to avoid instantiation errors in
+    # Swagger / DRF when describing input objects.
+    photo = PropertyPhotoSerializer(many=True, required=False, read_only=True)
     rent = serializers.SerializerMethodField() # for list of units API
     photos = serializers.SerializerMethodField() # for list of units API
     tenants = serializers.SerializerMethodField() # for list of units API

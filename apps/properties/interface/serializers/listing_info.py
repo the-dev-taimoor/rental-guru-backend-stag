@@ -5,7 +5,9 @@ from apps.properties.infrastructure.models import ListingInfo, Property, Propert
 from .property_photo import PropertyPhotoSerializer
 
 class ListingInfoSerializer(serializers.ModelSerializer):
-    photo = PropertyPhotoSerializer(many=True, required=False)
+    # Make nested photo serializer read-only to prevent DRF/Swagger from
+    # attempting to instantiate nested serializer as items for input.
+    photo = PropertyPhotoSerializer(many=True, required=False, read_only=True)
     page_saved = serializers.IntegerField(required=True, write_only=True)
     photos = PropertyPhotoSerializer(many=True, read_only=True)
 

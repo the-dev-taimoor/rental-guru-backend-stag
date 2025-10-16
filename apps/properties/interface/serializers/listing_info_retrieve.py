@@ -4,7 +4,7 @@ from apps.properties.infrastructure.models import PropertyPhoto, ListingInfo
 from .property_photo import PropertyPhotoSerializer
 
 class ListingInfoRetrieveSerializer(serializers.ModelSerializer):
-    photo = PropertyPhotoSerializer(many=True, required=False)
+    photo = PropertyPhotoSerializer(many=True, required=False, read_only=True)
 
     class Meta:
         model = ListingInfo

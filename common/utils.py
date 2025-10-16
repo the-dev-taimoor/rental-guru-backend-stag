@@ -19,27 +19,34 @@ logger = logging.getLogger('django')
 def custom_exception_handler(exc, context):
     response = exception_handler(exc, context)
     message = None
-    error_ = exc.args[0] if isinstance(exc, Http404) or isinstance(exc, IntegrityError) else exc.detail
+
+    # Safely extract error message
+    if isinstance(exc, (Http404, IntegrityError)):
+        error_ = exc.args[0]
+    elif hasattr(exc, 'detail'):
+        error_ = exc.detail
+    else:
+        # fallback for non-DRF exceptions like SwaggerGenerationError
+        error_ = str(exc)
+
     error = flatten_errors(error_)
+
     if isinstance(exc, Http404):
         message = 'Not found.'
-    if isinstance(exc, InvalidToken):
+    elif isinstance(exc, InvalidToken):
         message = 'Invalid Token'
-    if isinstance(exc, NotFound):
+    elif isinstance(exc, NotFound):
         message = 'Not found.'
-    if isinstance(exc, ValidationError):
+    elif isinstance(exc, ValidationError):
         message = 'Invalid Field.'
-    if isinstance(exc, IntegrityError):
+    elif isinstance(exc, IntegrityError):
         message = 'Invalid Value.'
-        # if exc.args[0]['non_field_errors'][0].code == 'unique':
-        #     message = 'Duplicate'
-        #     error = 'Details for this identity already exists.'
 
     response_data = {
         'data': {},
         'error': error if error else None,
         'success': False,
-        'message': message
+        'message': message,
     }
 
     if response is not None:
@@ -48,7 +55,6 @@ def custom_exception_handler(exc, context):
         response = DRFResponse(response_data, status=status.HTTP_400_BAD_REQUEST)
 
     return response
-
 
 def flatten_errors(errors, field_name=None):
     """

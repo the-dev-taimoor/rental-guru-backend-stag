@@ -42,3 +42,4 @@ ehthumbs.db
 config.json
 
 logs/
+tmp/

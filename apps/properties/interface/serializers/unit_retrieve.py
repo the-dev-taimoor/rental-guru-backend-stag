@@ -4,7 +4,8 @@ from apps.properties.infrastructure.models import PropertyPhoto, Unit
 from .property_photo import PropertyPhotoSerializer
 
 class UnitRetrieveSerializer(serializers.ModelSerializer):
-    photo = PropertyPhotoSerializer(many=True, required=False)
+    # Read-only nested serializer for unit photos
+    photo = PropertyPhotoSerializer(many=True, required=False, read_only=True)
 
     class Meta:
         model = Unit
