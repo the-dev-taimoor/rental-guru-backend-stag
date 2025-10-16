@@ -5,6 +5,7 @@ from django.db.models import Prefetch
 
 from common.constants import Success
 from common.utils import CustomResponse
+from common.dummy_serializer import DummySerializer
 
 from apps.user_authentication.infrastructure.models import ServiceCategory, ServiceSubCategory
 
@@ -16,6 +17,9 @@ class ServiceCategoriesView(ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     queryset = ServiceCategory.objects.all()
 
+    def get_serializer_class(self):
+        return DummySerializer
+    
     def list(self, request, *args, **kwargs):
         subcategories_qs = ServiceSubCategory.objects.all()
         categories = self.queryset.prefetch_related(

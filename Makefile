@@ -40,7 +40,7 @@ help:
 # ---------------------------
 
 run:
-	$(MANAGE) runserver 0.0.0.0:8000
+	$(MANAGE) runserver 127.0.0.1:8000
 
 migrate:
 	$(MANAGE) migrate

@@ -5,6 +5,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from common.constants import Success
 from common.utils import CustomResponse
+from common.dummy_serializer import DummySerializer
 
 from apps.user_authentication.infrastructure.models import ServiceSubCategory
 
@@ -17,6 +18,10 @@ class ServiceSubCategoriesView(ModelViewSet):
     queryset = ServiceSubCategory.objects.all()
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['category_id']
+
+    def get_serializer_class(self):
+        return DummySerializer
+
 
     def list(self, request, *args, **kwargs):
         subcategories = self.filter_queryset(self.queryset.values('id', 'name'))
