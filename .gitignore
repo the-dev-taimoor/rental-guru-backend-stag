@@ -43,3 +43,4 @@ config.json
 
 logs/
 tmp/
+.ruff_cache

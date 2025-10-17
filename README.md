@@ -1,10 +1,11 @@
-# Rental Guru Backend
+# Arii AI Backend
 
 A comprehensive Django REST API backend for a rental property management platform that connects property owners, tenants, and service vendors.
 
 ## 🏗️ Project Overview
 
-Rental Guru is a multi-tenant rental property management system that facilitates:
+Arii AI is a multi-tenant rental property management system that facilitates:
+
 - Property listing and management
 - Tenant applications and lease management
 - Vendor services and invitations
@@ -14,6 +15,7 @@ Rental Guru is a multi-tenant rental property management system that facilitates
 ## 🚀 Features
 
 ### Core Functionality
+
 - **Multi-role Authentication**: Property owners, tenants, vendors, and admins
 - **Property Management**: Create, list, and manage rental properties with units
 - **Rental Applications**: Complete application workflow from submission to approval
@@ -22,6 +24,7 @@ Rental Guru is a multi-tenant rental property management system that facilitates
 - **Real-time Notifications**: Email-based invitation and notification system
 
 ### Technical Features
+
 - JWT-based authentication with refresh tokens
 - PostgreSQL database with comprehensive data modeling
 - AWS S3 integration for file storage
@@ -38,6 +41,69 @@ Rental Guru is a multi-tenant rental property management system that facilitates
 - **Image Processing**: Pillow
 - **Data Processing**: pandas, openpyxl
 - **Containerization**: Docker & Docker Compose
+
+## 🧰 Development Workflow
+
+The project uses a Makefile to simplify common development tasks.
+
+| Command           | Description              |
+| ----------------- | ------------------------ |
+| make install-deps | Install dependencies     |
+| make add-deps     | Update requirements.txt  |
+| make format       | Format code using Black  |
+| make lint         | Run Ruff linter          |
+| make lint-fix     | Auto-fix linting issues  |
+| make clean        | Remove cache files       |
+| make hooks        | Install pre-commit hooks |
+
+### Example Workflow:
+
+1. make install-deps
+2. make hooks
+3. make format
+4. make lint
+5. make lint-fix
+
+## 🧹 Code Quality & Standards
+
+- Black for formatting
+- Ruff for linting and import sorting
+- Pre-commit hooks for enforcing style before commit
+
+### Commands:
+
+- make format → Format code
+- make lint → Check for issues
+- make lint-fix → Fix issues
+- make hooks → Install hooks
+- git commit --no-verify → Bypass hook (only in emergencies)
+
+### 🧑‍💻 Contribution Guidelines
+
+- Use feature-based branches: feature/<description> or fix/<description>
+- Use conventional commits:
+  - feat(auth): implement refresh token rotation
+  - fix(properties): resolve property detail API bug
+  - refactor: clean up utility imports
+- Ensure all code passes lint and formatting before PRs
+
+### 🧩 Developer Environment
+
+Recommended VS Code Extensions:
+
+- Black Formatter
+- Ruff
+- Python (Microsoft)
+- Prettier
+- EditorConfig
+
+## 🧾 Notes
+
+This project enforces a clean, standardized Python codebase.
+All contributors must:
+
+- Run make lint and make format before commits
+- Keep requirements.txt updated via make add-deps
 
 ## 📁 Project Structure
 
@@ -79,6 +145,7 @@ rental-guru-backend/
 ## 🔧 Installation & Setup
 
 ### Prerequisites
+
 - Python 3.9+
 - PostgreSQL 13+
 - Docker & Docker Compose (for containerized setup)
@@ -87,24 +154,28 @@ rental-guru-backend/
 ### Local Development Setup
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd rental-guru-backend
    ```
 
 2. **Create virtual environment**
+
    ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
 3. **Install dependencies**
+
    ```bash
    pip install -r requirements.txt
    ```
 
 4. **Environment Configuration**
    Create a `.env` file in the root directory:
+
    ```env
    # Database Configuration
    DB_ENGINE=django.db.backends.postgresql
@@ -131,6 +202,7 @@ rental-guru-backend/
    ```
 
 5. **Database Setup**
+
    ```bash
    # Create PostgreSQL database
    createdb rental_guru_db
@@ -142,7 +214,13 @@ rental-guru-backend/
    python manage.py createsuperuser
    ```
 
-6. **Run Development Server**
+6. **Install Git Hooks**
+
+   ```bash
+   pre-commit install
+   ```
+
+7. **Run Development Server**
    ```bash
    python manage.py runserver
    ```
@@ -150,6 +228,7 @@ rental-guru-backend/
 ### Docker Development Setup
 
 1. **Using Docker Compose**
+
    ```bash
    # Start all services (API + Database + Adminer)
    docker-compose -f docker-compose-dev.yaml up -d
@@ -170,12 +249,14 @@ rental-guru-backend/
 ## 📚 API Documentation
 
 ### Base URL
+
 - Development: `http://localhost:8000/v1/api/`
 - Swagger UI: `http://localhost:8000/swagger/`
 
 ### Main Endpoints
 
 #### Authentication (`/v1/api/`)
+
 - `POST /signup/` - User registration
 - `POST /token/` - Login (JWT token)
 - `POST /token/refresh/` - Refresh JWT token
@@ -186,6 +267,7 @@ rental-guru-backend/
 - `POST /reset-password/` - Reset password
 
 #### Properties (`/v1/api/property/`)
+
 - `GET /summary/` - Property listings
 - `POST /detail/` - Create property
 - `GET /detail/{id}/` - Property details
@@ -196,6 +278,7 @@ rental-guru-backend/
 - `GET /amenities/` - Available amenities
 
 #### Rental Applications (`/v1/api/rental-application/`)
+
 - `POST /apply/` - Submit application
 - `GET /my-applications/` - User's applications
 - `GET /received-applications/` - Property owner's received applications
@@ -207,6 +290,7 @@ rental-guru-backend/
 ### Key Models
 
 #### User Authentication
+
 - **CustomUser**: Extended user model with business info and subscription plans
 - **PropertyOwner**: Property owner profile with KYC information
 - **Tenant**: Tenant profile with income and employment details
@@ -215,6 +299,7 @@ rental-guru-backend/
 - **TenantInvitation**: Tenant invitation system
 
 #### Properties
+
 - **Property**: Main property information
 - **Unit**: Individual units within properties
 - **ListingInfo**: Detailed listing information
@@ -223,6 +308,7 @@ rental-guru-backend/
 - **CalendarSlot**: Availability scheduling
 
 #### Applications
+
 - **RentalApplication**: Rental application submissions
 - **ApplicationLeaseAgreement**: Lease agreement documents
 
@@ -236,10 +322,11 @@ The system uses JWT-based authentication with role-based access control:
 - **Admins**: Full system access
 
 ### JWT Configuration
+
 - Access token lifetime: 1 day
 - Refresh token lifetime: 1 day
 - Token blacklisting supported
 
 ---
 
-**Note**: This README provides a comprehensive overview of the Rental Guru Backend. For detailed API documentation, please refer to the Postman Collection.
+**Note**: This README provides a comprehensive overview of the Arii AI Backend. For detailed API documentation, please refer to the Postman Collection.
