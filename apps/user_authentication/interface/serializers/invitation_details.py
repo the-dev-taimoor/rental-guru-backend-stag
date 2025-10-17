@@ -1,8 +1,9 @@
-from rest_framework import serializers
 from django.utils import timezone
+from rest_framework import serializers
 
-from common.utils import get_presigned_url
 from apps.user_authentication.infrastructure.models import Agreements
+from common.utils import get_presigned_url
+
 
 class InvitationDetailsSerializer(serializers.Serializer):
     """
@@ -23,7 +24,7 @@ class InvitationDetailsSerializer(serializers.Serializer):
                 'email': instance.email,
                 'sender': instance.sender.email,
                 'sender_name': f"{instance.sender.first_name} {instance.sender.last_name}".strip(),
-                'expired_at': instance.expired_at
+                'expired_at': instance.expired_at,
             }
         elif hasattr(instance, 'tenant_type'):  # TenantInvitation
             lease_agreement_url = None
@@ -42,7 +43,7 @@ class InvitationDetailsSerializer(serializers.Serializer):
                 'lease_end_date': instance.lease_end_date,
                 'lease_agreement_url': lease_agreement_url,
                 'lease_ended': True if instance.lease_end_date <= timezone.now().date() else False,
-                'expired_at': instance.expired_at
+                'expired_at': instance.expired_at,
             }
         else:
             return {}

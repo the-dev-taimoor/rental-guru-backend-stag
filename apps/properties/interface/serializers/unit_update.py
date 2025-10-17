@@ -1,11 +1,12 @@
 from rest_framework import serializers
 
+from apps.properties.infrastructure.models import PropertyPhoto, Unit
 from common.constants import Error
 from common.utils import unsnake_case
 
-from apps.properties.infrastructure.models import PropertyPhoto, Unit
 from .property_photo import PropertyPhotoSerializer
 from .unit import UnitSerializer
+
 
 class UnitUpdateSerializer(UnitSerializer):
     existing_photos = serializers.JSONField(write_only=True, required=False)
@@ -22,9 +23,7 @@ class UnitUpdateSerializer(UnitSerializer):
 
             unit_choices = UnitSerializer.unit_type_by_choices.get(property_type, [])
             if unit_choices and value not in [choice[0] for choice in unit_choices]:
-                raise serializers.ValidationError(
-                    Error.INVALID_UNIT_TYPE.format(unsnake_case(property_type))
-                )
+                raise serializers.ValidationError(Error.INVALID_UNIT_TYPE.format(unsnake_case(property_type)))
         return value
 
     def to_representation(self, instance):

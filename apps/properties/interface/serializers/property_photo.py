@@ -1,7 +1,8 @@
 from rest_framework import serializers
-from common.utils import get_presigned_url
 
 from apps.properties.infrastructure.models import PropertyPhoto
+from common.utils import get_presigned_url
+
 
 class PropertyPhotoSerializer(serializers.ModelSerializer):
     class Meta:

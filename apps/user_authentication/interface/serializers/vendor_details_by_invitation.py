@@ -1,14 +1,18 @@
 from rest_framework import serializers
+
 from apps.user_authentication.infrastructure.models import VendorInvitation
+
 from .vendor_basic_info import VendorBasicInfoSerializer
 from .vendor_business_info import VendorBusinessInfoSerializer
 from .vendor_certification_info import VendorCertificationInfoSerializer
-from .vendor_services_info import VendorServicesInfoSerializer
 from .vendor_jobs_info import VendorJobsInfoSerializer
 from .vendor_payments_info import VendorPaymentsInfoSerializer
+from .vendor_services_info import VendorServicesInfoSerializer
+
 
 class VendorDetailsByInvitationSerializer(serializers.Serializer):
     """Main serializer that combines all vendor information tabs"""
+
     invitation_info = serializers.SerializerMethodField()
     basic_info = VendorBasicInfoSerializer(read_only=True)
     business_info = VendorBusinessInfoSerializer(read_only=True)
@@ -30,6 +34,6 @@ class VendorDetailsByInvitationSerializer(serializers.Serializer):
                 'accepted': invitation.accepted,
                 'blocked': invitation.blocked,
                 'created_at': invitation.created_at,
-                'updated_at': invitation.updated_at
+                'updated_at': invitation.updated_at,
             }
         return None

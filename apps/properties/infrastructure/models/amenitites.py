@@ -1,5 +1,5 @@
-
 from django.db import models
+
 
 class Amenities(models.Model):
     amenity = models.CharField(max_length=100)

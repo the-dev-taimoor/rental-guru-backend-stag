@@ -1,7 +1,9 @@
-from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from apps.properties.infrastructure.models.listing_info import ListingInfo
 from apps.properties.interface.serializers.listing_info import ListingInfoSerializer
+
 
 class PublicListingAPIView(APIView):
     authentication_classes = []

@@ -1,5 +1,7 @@
-from apps.properties.infrastructure.models import ListingInfo
 from rest_framework import serializers
+
+from apps.properties.infrastructure.models import ListingInfo
+
 
 class PublicListingSerializer(serializers.ModelSerializer):
     class Meta:

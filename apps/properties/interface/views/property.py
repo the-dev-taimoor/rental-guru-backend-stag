@@ -1,20 +1,22 @@
-from .general import GeneralViewSet
+from datetime import datetime
 
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.exceptions import NotFound
+from rest_framework.filters import OrderingFilter
+from rest_framework.permissions import IsAuthenticated
+
+from apps.properties.application.pagination import PropertiesPagination
+from apps.properties.infrastructure.filters import PropertyFilter
 from apps.properties.infrastructure.models import Property
 from apps.properties.interface.serializers import PropertySerializer
-from apps.properties.application.pagination import PropertiesPagination
-from rest_framework.permissions import IsAuthenticated
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import OrderingFilter
-from apps.properties.infrastructure.filters import PropertyFilter
-from rest_framework.decorators import action
-
-from common.utils import CustomResponse
-from common.constants import Success, Error
-from rest_framework import status
-from datetime import datetime
-from rest_framework.exceptions import NotFound
 from apps.user_authentication.application.permissions import IsKYCApproved, IsPropertyOwner
+from common.constants import Error, Success
+from common.utils import CustomResponse
+
+from .general import GeneralViewSet
+
 
 class PropertyViewSet(GeneralViewSet):
     queryset = Property.objects.all()
@@ -42,8 +44,7 @@ class PropertyViewSet(GeneralViewSet):
 
         serializer = self.get_serializer(property)
 
-        return CustomResponse({"message": Success.PROPERTY_PUBLISHED_STATUS, "data": serializer.data},
-                        status=status.HTTP_200_OK)
+        return CustomResponse({"message": Success.PROPERTY_PUBLISHED_STATUS, "data": serializer.data}, status=status.HTTP_200_OK)
 
     def get_queryset(self):
         # Skip during Swagger schema generation

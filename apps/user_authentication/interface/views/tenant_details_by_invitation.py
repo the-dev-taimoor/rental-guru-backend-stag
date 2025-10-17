@@ -1,14 +1,11 @@
-
-from rest_framework.views import APIView
-from rest_framework import status, permissions
-
-from django.utils import timezone
 from django.contrib.auth import get_user_model
-
-from common.constants import Success, Error
-from common.utils import CustomResponse, get_presigned_url
+from django.utils import timezone
+from rest_framework import permissions, status
+from rest_framework.views import APIView
 
 from apps.user_authentication.infrastructure.models import Agreements, TenantInvitation
+from common.constants import Error, Success
+from common.utils import CustomResponse, get_presigned_url
 
 
 class TenantDetailsByInvitationView(APIView):
@@ -16,6 +13,7 @@ class TenantDetailsByInvitationView(APIView):
     API view to get tenant details by invitation ID.
     Returns tenant information organized in different sections.
     """
+
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, invitation_id):
@@ -29,37 +27,22 @@ class TenantDetailsByInvitationView(APIView):
         try:
             invitation = TenantInvitation.objects.get(id=invitation_id, sender=request.user)
         except TenantInvitation.DoesNotExist:
-            return CustomResponse(
-                {"error": Error.TENANT_INVITATION_NOT_FOUND},
-                status=status.HTTP_404_NOT_FOUND
-            )
+            return CustomResponse({"error": Error.TENANT_INVITATION_NOT_FOUND}, status=status.HTTP_404_NOT_FOUND)
 
         if not invitation.accepted:
-            return CustomResponse(
-                {"error": Error.TENANT_INVITATION_NOT_ACCEPTED},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return CustomResponse({"error": Error.TENANT_INVITATION_NOT_ACCEPTED}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             user = get_user_model().objects.get(email=invitation.email)
         except get_user_model().DoesNotExist:
-            return CustomResponse(
-                {"error": Error.TENANT_NOT_FOUND_FOR_INVITATION},
-                status=status.HTTP_404_NOT_FOUND
-            )
+            return CustomResponse({"error": Error.TENANT_NOT_FOUND_FOR_INVITATION}, status=status.HTTP_404_NOT_FOUND)
 
         response_data = {
             'basic_info': self._get_basic_info(user, invitation),
             'lease_info': self._get_lease_info(invitation),
         }
 
-        return CustomResponse(
-            {
-                "message": Success.TENANT_DETAILS_RETRIEVED,
-                "data": response_data
-            },
-            status=status.HTTP_200_OK
-        )
+        return CustomResponse({"message": Success.TENANT_DETAILS_RETRIEVED, "data": response_data}, status=status.HTTP_200_OK)
 
     def _get_basic_info(self, user, invitation):
         """Get basic user information"""
@@ -97,6 +80,5 @@ class TenantDetailsByInvitationView(APIView):
             'lease_start_date': invitation.lease_start_date,
             'lease_end_date': invitation.lease_end_date,
             'lease_agreement_url': lease_agreement_url,
-            'lease_ended': True if invitation.lease_end_date <= timezone.now().date() else False
+            'lease_ended': True if invitation.lease_end_date <= timezone.now().date() else False,
         }
-

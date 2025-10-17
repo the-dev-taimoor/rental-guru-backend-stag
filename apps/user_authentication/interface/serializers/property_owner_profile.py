@@ -1,7 +1,9 @@
 from rest_framework import serializers
-from common.utils import get_presigned_url
+
 from apps.user_authentication.infrastructure.models import PropertyOwner
-                                                            
+from common.utils import get_presigned_url
+
+
 class PropertyOwnerProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = PropertyOwner

@@ -15,12 +15,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.contrib import admin
-from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from drf_yasg.views import get_schema_view
+from django.contrib import admin
+from django.urls import include, path
 from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 
 # Define your schema view (keep security definitions in settings via SWAGGER_SETTINGS)
@@ -31,7 +31,7 @@ schema_view = get_schema_view(
         description="API documentation for the Project ARII AI platform",
     ),
     public=True,
-    permission_classes=[permissions.AllowAny]
+    permission_classes=[permissions.AllowAny],
 )
 
 urlpatterns = [

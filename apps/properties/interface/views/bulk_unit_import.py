@@ -1,20 +1,27 @@
 import os
+from collections import defaultdict
 from datetime import datetime
-from django.db.models import  F, Value
-from django.db.models.functions import Lower, Replace
 
+from django.db.models import F, Value
+from django.db.models.functions import Lower, Replace
+from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.parsers import MultiPartParser
 from rest_framework.exceptions import ValidationError
+from rest_framework.parsers import MultiPartParser
 from rest_framework.views import APIView
 
-from collections import defaultdict
+from apps.properties.infrastructure.models import (
+    Amenities,
+    CostFeesCategory,
+    Property,
+    PropertyAssignedAmenities,
+    PropertyDocument,
+    PropertyPhoto,
+)
+from apps.properties.interface.serializers import BulkUnitImportSerializer, CostFeeSerializer, RentDetailsSerializer, UnitSerializer
+from common.constants import Error, Success
+from common.utils import CustomResponse, NotFound, custom_exception_handler, download_file_from_url, snake_case, unsnake_case
 
-from apps.properties.infrastructure.models import Property, PropertyDocument, PropertyPhoto, PropertyAssignedAmenities, Amenities, CostFeesCategory
-from apps.properties.interface.serializers import BulkUnitImportSerializer, UnitSerializer, RentDetailsSerializer, CostFeeSerializer
-from common.constants import Success, Error
-from django.shortcuts import get_object_or_404
-from common.utils import CustomResponse, NotFound, custom_exception_handler, snake_case, unsnake_case, download_file_from_url
 
 class BulkUnitImportAPIView(APIView):
     parser_classes = [MultiPartParser]
@@ -36,11 +43,15 @@ class BulkUnitImportAPIView(APIView):
             else:
                 sheet_name_uq = 'unit_info'
 
-            total_units_allowed = int(property_instance.listing_info.number_of_units if property_instance.listing_info.number_of_units else 0)
+            total_units_allowed = int(
+                property_instance.listing_info.number_of_units if property_instance.listing_info.number_of_units else 0
+            )
             number_of_units_to_add = len(processed_data.get(sheet_name_uq).keys())
             existing_units_number = int(property_instance.unit_property.count() if property_instance.unit_property.count() else 0)
             if total_units_allowed < (number_of_units_to_add + existing_units_number):
-                raise ValidationError(Error.NUMBER_OF_UNITS_MISMATCH.format(total_units_allowed, existing_units_number, number_of_units_to_add))
+                raise ValidationError(
+                    Error.NUMBER_OF_UNITS_MISMATCH.format(total_units_allowed, existing_units_number, number_of_units_to_add)
+                )
 
             total_units = len(processed_data.get(sheet_name_uq).keys())
             unit_success_count = 0
@@ -74,7 +85,6 @@ class BulkUnitImportAPIView(APIView):
 
                 unit_instance.csv_upload = True
                 unit_instance.save()
-
 
                 photos = processed_data.get('photos')
                 photos_detail = photos.get(unit_key)
@@ -131,16 +141,7 @@ class BulkUnitImportAPIView(APIView):
                     amenities_ = amenities.get(unit_key)[0]['sub_amenities'].split(',')
                     amenities_list = snake_case([a.strip() for a in amenities_])
                     existing_amenities = (
-                        Amenities.objects
-                        .annotate(
-                            normalized_sub=Lower(
-                                Replace(
-                                    F("sub_amenity"),
-                                    Value(" "),
-                                    Value("_")
-                                )
-                            )
-                        )
+                        Amenities.objects.annotate(normalized_sub=Lower(Replace(F("sub_amenity"), Value(" "), Value("_"))))
                         .filter(normalized_sub__in=amenities_list)
                         .values("id", "sub_amenity")
                     )
@@ -154,11 +155,7 @@ class BulkUnitImportAPIView(APIView):
                     for sub_id in sub_amenities_ids:
                         sub_obj = get_object_or_404(Amenities, id=sub_id)
 
-                        pa = PropertyAssignedAmenities(
-                            property=property_instance,
-                            sub_amenity=sub_obj,
-                            unit=unit_instance
-                        )
+                        pa = PropertyAssignedAmenities(property=property_instance, sub_amenity=sub_obj, unit=unit_instance)
                         bulk_list.append(pa)
 
                     PropertyAssignedAmenities.objects.bulk_create(bulk_list)
@@ -167,8 +164,9 @@ class BulkUnitImportAPIView(APIView):
                     unit_instance.page_saved = 3
                     unit_instance.save()
                 else:
-                    unit_errors[unsnake_case(unit_key)].append("Amenities were not found in the file. Edit the unit from Inactive units tab.")
-
+                    unit_errors[unsnake_case(unit_key)].append(
+                        "Amenities were not found in the file. Edit the unit from Inactive units tab."
+                    )
 
                 cost_fee = processed_data.get('cost_fee')
                 cost_fee_detail = cost_fee.get(unit_key)
@@ -178,8 +176,9 @@ class BulkUnitImportAPIView(APIView):
                         cost_obj['property'] = property_instance
                         cost_obj['unit'] = unit_instance
                         cost_obj['category_name'] = cost.get('category_name')
-                        category_obj = CostFeesCategory.objects.filter(property=property_instance, unit=unit_instance,
-                                                                            category_name=cost.get('category_name')).first()
+                        category_obj = CostFeesCategory.objects.filter(
+                            property=property_instance, unit=unit_instance, category_name=cost.get('category_name')
+                        ).first()
                         if not category_obj:
                             category_obj = CostFeesCategory.objects.create(**cost_obj)
                         cost['category'] = category_obj.id
@@ -208,7 +207,6 @@ class BulkUnitImportAPIView(APIView):
                 else:
                     unit_errors[unsnake_case(unit_key)].append("Cost fee was not found in the file. Edit the unit from Inactive units tab.")
 
-
                 documents = processed_data.get('document')
                 documents_detail = documents.get(unit_key)
                 for document in documents_detail:
@@ -218,10 +216,14 @@ class BulkUnitImportAPIView(APIView):
                     document_obj['title'] = document.get('title')
                     document_obj['visibility'] = document.get('visibility')
                     document_obj['document_type'] = document.get('document_type')
-                    
+
                     # Handle document URL
                     document_url = document.get('documents')
-                    if document_url and isinstance(document_url, str) and (document_url.startswith('http://') or document_url.startswith('https://')):
+                    if (
+                        document_url
+                        and isinstance(document_url, str)
+                        and (document_url.startswith('http://') or document_url.startswith('https://'))
+                    ):
                         try:
                             document_url, temp_file_path = download_file_from_url(document_url)
                             document_obj['document'] = document_url
@@ -242,17 +244,21 @@ class BulkUnitImportAPIView(APIView):
                 'csv_units_count': total_units,
                 'units_created': unit_success_count,
                 'units_failed': total_units - unit_success_count,
-                'data': unit_errors
+                'data': unit_errors,
             }
 
             if unit_success_count == total_units:
-                return CustomResponse({'data': response_dict, 'message': Success.ALL_UNITS_CREATED},
-                                      status=status.HTTP_201_CREATED)
+                return CustomResponse({'data': response_dict, 'message': Success.ALL_UNITS_CREATED}, status=status.HTTP_201_CREATED)
             else:
                 unit_errors_ = f"Error in units; {', '.join(list(unit_errors.keys()))}."
-                return CustomResponse({'data': response_dict, 'message': Error.SOME_UNITS_NOT_CREATED.format(
-                    unit_success_count, total_units-unit_success_count), 'error': unit_errors_},
-                                      status=status.HTTP_201_CREATED)
+                return CustomResponse(
+                    {
+                        'data': response_dict,
+                        'message': Error.SOME_UNITS_NOT_CREATED.format(unit_success_count, total_units - unit_success_count),
+                        'error': unit_errors_,
+                    },
+                    status=status.HTTP_201_CREATED,
+                )
 
         else:
             return CustomResponse({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)

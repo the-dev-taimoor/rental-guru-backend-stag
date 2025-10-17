@@ -1,6 +1,8 @@
 from django.db import models
+
 from .property import Property
 from .unit import Unit
+
 
 class PropertyPhoto(models.Model):
     property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='property_photos')

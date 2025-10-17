@@ -1,6 +1,7 @@
-
 from rest_framework.exceptions import APIException
+
 from apps.user_authentication.infrastructure.models.custom_user import CustomUser
+
 
 # this is not being used anywhere
 def create_user(email, password, **extra_fields):

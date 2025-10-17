@@ -1,23 +1,23 @@
-from rest_framework.views import APIView
-from rest_framework.parsers import MultiPartParser
-from rest_framework.exceptions import ValidationError
-from rest_framework import status, permissions
-from drf_yasg.utils import swagger_auto_schema
+from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.shortcuts import get_object_or_404
-from django.contrib.auth import get_user_model
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import permissions, status
+from rest_framework.exceptions import ValidationError
+from rest_framework.parsers import MultiPartParser
+from rest_framework.views import APIView
 
+from apps.user_authentication.infrastructure.models import LicenseAndCertificates, PropertyOwner, Role
+from apps.user_authentication.interface.serializers import LicenseAndCertificatesSerializer, PropertyOwnerProfileSerializer
 from common.constants import Success
 from common.utils import CustomResponse
-
-from apps.user_authentication.infrastructure.models import PropertyOwner, Role, LicenseAndCertificates
-from apps.user_authentication.interface.serializers import LicenseAndCertificatesSerializer, PropertyOwnerProfileSerializer
 
 
 class PropertyOwnerProfileView(APIView):
     """
     API view to create and update a user profile.
     """
+
     parser_classes = [MultiPartParser]
     permission_classes = [permissions.IsAuthenticated]
     serializer = PropertyOwnerProfileSerializer
@@ -36,7 +36,7 @@ class PropertyOwnerProfileView(APIView):
         request_body=serializer,
         responses={
             201: Success.PROFILE_SETUP,
-        }
+        },
     )
     def post(self, request):
         data = request.data.copy()
@@ -52,7 +52,9 @@ class PropertyOwnerProfileView(APIView):
                 if business_license:
                     for d in business_license:
                         if d:
-                            LicenseAndCertificates.objects.create(user_id=request.user, profile_type=self.role, document=d, document_type='business_license')
+                            LicenseAndCertificates.objects.create(
+                                user_id=request.user, profile_type=self.role, document=d, document_type='business_license'
+                            )
 
                 Role.objects.create(user_id=self.request.user, role=self.role)
                 if page_saved:
@@ -62,8 +64,7 @@ class PropertyOwnerProfileView(APIView):
 
             response_data = serializer.data
             response_data['business_license'] = self.get_certificates(request, 'business_license', self.role)
-            return CustomResponse({'data': response_data, 'message': Success.PROFILE_SETUP},
-                                  status=status.HTTP_201_CREATED)
+            return CustomResponse({'data': response_data, 'message': Success.PROFILE_SETUP}, status=status.HTTP_201_CREATED)
         raise ValidationError(serializer.errors)
 
     def get_certificates(self, request, type_, profile_type):
@@ -76,6 +77,5 @@ class PropertyOwnerProfileView(APIView):
         serializer = self.serializer(profile, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return CustomResponse({'data': serializer.data, 'message': Success.PROFILE_UPDATED},
-                                  status=status.HTTP_200_OK)
+            return CustomResponse({'data': serializer.data, 'message': Success.PROFILE_UPDATED}, status=status.HTTP_200_OK)
         raise ValidationError(serializer.errors)

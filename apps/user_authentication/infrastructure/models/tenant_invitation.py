@@ -1,7 +1,8 @@
-from django.db import models
 from django.conf import settings
+from django.db import models
 
 User = settings.AUTH_USER_MODEL
+
 
 class TenantInvitation(models.Model):
     TENANT_TYPE_CHOICES = [
@@ -40,7 +41,13 @@ class TenantInvitation(models.Model):
     expired_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        unique_together = ('email', 'tenant_type', 'sender', 'assignment_type', 'assignment_id')  # Prevent duplicate invitations for same email+tenant_type+assignment
+        unique_together = (
+            'email',
+            'tenant_type',
+            'sender',
+            'assignment_type',
+            'assignment_id',
+        )  # Prevent duplicate invitations for same email+tenant_type+assignment
 
     def __str__(self):
         return f"Tenant invitation to {self.first_name} {self.last_name} ({self.email}) for {self.tenant_type}"
@@ -50,12 +57,14 @@ class TenantInvitation(models.Model):
         """Get the assigned property or unit object"""
         if self.assignment_type == 'property':
             from apps.properties.infrastructure.models import Property
+
             try:
                 return Property.objects.get(id=self.assignment_id)
             except Property.DoesNotExist:
                 return None
         elif self.assignment_type == 'unit':
             from apps.properties.infrastructure.models import Unit
+
             try:
                 return Unit.objects.get(id=self.assignment_id)
             except Unit.DoesNotExist:

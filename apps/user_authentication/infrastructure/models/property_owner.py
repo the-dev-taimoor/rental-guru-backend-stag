@@ -1,19 +1,18 @@
-from django.db import models
 from django.conf import settings
+from django.db import models
 
 User = settings.AUTH_USER_MODEL
+
 
 class PropertyOwner(models.Model):
     class RegistrationType(models.TextChoices):
         individual = 'individual'
         business = 'business'
-    user_id  = models.OneToOneField(User, on_delete=models.CASCADE, related_name='property_owner_user')
+
+    user_id = models.OneToOneField(User, on_delete=models.CASCADE, related_name='property_owner_user')
 
     profile_image_path = models.ImageField(upload_to='profile_images/', blank=True, null=True)
-    registration_type = models.CharField(
-        max_length=20,
-        choices=RegistrationType.choices,
-        default=RegistrationType.individual)
+    registration_type = models.CharField(max_length=20, choices=RegistrationType.choices, default=RegistrationType.individual)
     business_name = models.CharField(max_length=100, blank=True, null=True)
     business_website = models.CharField(max_length=100, blank=True, null=True)
     business_address = models.CharField(max_length=100, blank=True, null=True)

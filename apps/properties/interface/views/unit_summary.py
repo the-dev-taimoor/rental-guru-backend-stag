@@ -1,10 +1,10 @@
-from .general import GeneralViewSet
+from rest_framework.permissions import IsAuthenticated
 
 from apps.properties.infrastructure.models import Unit
-from rest_framework.permissions import IsAuthenticated
-from common.utils import CustomResponse
 from apps.properties.interface.serializers import PropertySummaryRetrieveSerializer, UnitRetrieveSerializer, UnitSerializer
+from common.utils import CustomResponse
 
+from .general import GeneralViewSet
 
 
 class UnitSummaryViewSet(GeneralViewSet):
@@ -25,6 +25,6 @@ class UnitSummaryViewSet(GeneralViewSet):
             'rental_details': PropertySummaryRetrieveSerializer.get_rental_details(property_id, unit_id),
             'amenities': PropertySummaryRetrieveSerializer.get_amenities(property_id, unit_id=unit_id),
             'cost_fees': PropertySummaryRetrieveSerializer.get_cost_fees(property_id, unit_id),
-            'documents': PropertySummaryRetrieveSerializer.get_documents(property_id, unit_id)
+            'documents': PropertySummaryRetrieveSerializer.get_documents(property_id, unit_id),
         }
         return unit_data

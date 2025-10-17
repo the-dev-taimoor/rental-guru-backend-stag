@@ -1,12 +1,13 @@
-from .base import BaseSettings
 import os
 import sys
+
+from .base import BaseSettings
+
 
 class LocalSettings(BaseSettings):
     LOGGING = {
         "version": 1,
         "disable_existing_loggers": False,
-
         "formatters": {
             "detailed": {
                 "format": "{asctime} [{levelname}] {name} (line:{lineno}) - {message}",
@@ -18,7 +19,6 @@ class LocalSettings(BaseSettings):
                 "style": "{",
             },
         },
-
         "handlers": {
             "console": {
                 "class": "logging.StreamHandler",
@@ -32,7 +32,6 @@ class LocalSettings(BaseSettings):
                 "formatter": "detailed",
             },
         },
-
         "loggers": {
             # Django core logs (keep only warnings and above)
             "django": {
@@ -65,7 +64,6 @@ class LocalSettings(BaseSettings):
                 "propagate": False,
             },
         },
-
         # Root logger - only show high-level errors by default
         "root": {
             "handlers": ["console", "file"],

@@ -3,6 +3,7 @@ from rest_framework import serializers
 from apps.properties.infrastructure.models import CostFee
 from common.constants import Error
 
+
 class CostFeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = CostFee

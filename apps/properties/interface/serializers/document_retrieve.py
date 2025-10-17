@@ -3,6 +3,7 @@ from rest_framework import serializers
 from apps.properties.infrastructure.models import PropertyDocument
 from common.utils import get_presigned_url
 
+
 class DocumentRetrieveSerializer(serializers.ModelSerializer):
 
     class Meta:

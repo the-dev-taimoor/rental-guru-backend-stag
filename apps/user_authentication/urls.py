@@ -1,13 +1,37 @@
-from django.urls import path
 from django.conf import settings
+from django.urls import path
 from rest_framework.routers import DefaultRouter, SimpleRouter
 
-from apps.user_authentication.interface.views import (SignupView, CustomTokenObtainPairView, CustomTokenRefreshView, OTPView, OTPVerifyView,
-                    ForgotPasswordView, ResetPasswordView, LogoutView, PropertyOwnerProfileView, KYCRequests,
-                    KYCView, VendorProfileView, KYCRequestDetails, ServiceCategoriesView, ServiceSubCategoriesView,
-                    SelectRoleView, VendorInvitationView, VendorRolesView, VendorDetailsByInvitationView,
-                    BulkVendorInviteAPIView, TenantProfileView, TenantInvitationView, TenantDetailsByInvitationView,
-                    TenantTypesView, InvitationDetailsView, LeaseManagementView, ResendInvitation)
+from apps.user_authentication.interface.views import (
+    BulkVendorInviteAPIView,
+    CustomTokenObtainPairView,
+    CustomTokenRefreshView,
+    ForgotPasswordView,
+    InvitationDetailsView,
+    KYCRequestDetails,
+    KYCRequests,
+    KYCView,
+    LeaseManagementView,
+    LogoutView,
+    OTPVerifyView,
+    OTPView,
+    PropertyOwnerProfileView,
+    ResendInvitation,
+    ResetPasswordView,
+    SelectRoleView,
+    ServiceCategoriesView,
+    ServiceSubCategoriesView,
+    SignupView,
+    TenantDetailsByInvitationView,
+    TenantInvitationView,
+    TenantProfileView,
+    TenantTypesView,
+    VendorDetailsByInvitationView,
+    VendorInvitationView,
+    VendorProfileView,
+    VendorRolesView,
+)
+
 if settings.DEBUG:
     router = DefaultRouter()
 else:
@@ -32,14 +56,12 @@ urlpatterns = [
     path('kyc-request-detail/<int:pk>/', KYCRequestDetails.as_view(), name='kyc_request_detail'),
     path('kyc/', KYCView.as_view(), name='kyc_list'),
     path('kyc/stats/', KYCView.as_view(), name='kyc_stats'),
-
     # Vendor invitation API
     path('invite-vendor/', VendorInvitationView.as_view(), name='invite_vendor'),
     path('invite-vendor/<int:invitation_id>/', VendorInvitationView.as_view(), name='delete_vendor_invitation'),
     path('vendor-roles/', VendorRolesView.as_view(), name='vendor_roles'),
     path('invited-vendor-details/<int:invitation_id>/', VendorDetailsByInvitationView.as_view(), name='vendor_details_by_invitation'),
     path('invite-vendor-bulk/', BulkVendorInviteAPIView.as_view(), name='invite_vendor_bulk'),
-    
     # Tenant invitation API
     path('invite-tenant/', TenantInvitationView.as_view(), name='invite_tenant'),
     path('accept-agreement/', TenantInvitationView.as_view(), name='accept_agreement'),
@@ -47,13 +69,9 @@ urlpatterns = [
     path('tenant-types/', TenantTypesView.as_view(), name='tenant_types'),
     path('invited-tenant-details/<int:invitation_id>/', TenantDetailsByInvitationView.as_view(), name='tenant_details_by_invitation'),
     path('manage-lease/', LeaseManagementView.as_view(), name='manage_lease'),
-
     # Public invitation details API (no authentication required)
     path('invitation/<int:invitation_id>/', InvitationDetailsView.as_view(), name='invitation_details'),
-
     path('accept-invitation/', InvitationDetailsView.as_view(), name='accept_invitation'),
-
     path('resend-invitation/', ResendInvitation.as_view(), name='resend_invitation'),
-
 ]
 urlpatterns += router.urls

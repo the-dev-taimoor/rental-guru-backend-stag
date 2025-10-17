@@ -1,8 +1,10 @@
 from rest_framework import serializers
 
-from common.constants import Error
 from apps.properties.infrastructure.models import ListingInfo, Property, PropertyPhoto
+from common.constants import Error
+
 from .property_photo import PropertyPhotoSerializer
+
 
 class ListingInfoSerializer(serializers.ModelSerializer):
     # Make nested photo serializer read-only to prevent DRF/Swagger from

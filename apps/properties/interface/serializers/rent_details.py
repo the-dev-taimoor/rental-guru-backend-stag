@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
-from common.constants import Error
 from apps.properties.infrastructure.models import RentDetails
+from common.constants import Error
+
 
 class RentDetailsSerializer(serializers.ModelSerializer):
     page_saved = serializers.IntegerField(required=True, write_only=True)
@@ -34,10 +35,11 @@ class RentDetailsSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(Error.OFFER_NOT_REQUIRED)
             else:
                 if not (data.get('lease_start_date') and data.get('lease_end_date')):
-                    raise serializers.ValidationError(
-                        Error.TENANT_FIELDS_REQUIRED.format("'lease_start_date', 'lease_end_date'"))
+                    raise serializers.ValidationError(Error.TENANT_FIELDS_REQUIRED.format("'lease_start_date', 'lease_end_date'"))
         else:
             if data.get('promote_special_offer'):
                 if not (data.get('offer_start_date') and data.get('offer_end_date') and data.get('offer_percentage')):
-                    raise serializers.ValidationError(Error.OFFER_REQUIRED.format("'offer_start_date', 'offer_end_date', 'offer_percentage'"))
+                    raise serializers.ValidationError(
+                        Error.OFFER_REQUIRED.format("'offer_start_date', 'offer_end_date', 'offer_percentage'")
+                    )
         return data

@@ -1,8 +1,9 @@
-from .general import GeneralViewSet
+from rest_framework.permissions import IsAuthenticated
 
 from apps.properties.infrastructure.models import Property
 from apps.properties.interface.serializers import PropertySerializer
-from rest_framework.permissions import IsAuthenticated
+
+from .general import GeneralViewSet
 
 
 class TopListingsViewSet(GeneralViewSet):

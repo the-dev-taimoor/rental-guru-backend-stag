@@ -1,16 +1,12 @@
-
-from rest_framework.views import APIView
-from rest_framework import status, permissions
-
 from django.db import transaction
 from django.utils import timezone
-
-
-from common.constants import Success, Error
-from common.utils import CustomResponse
+from rest_framework import permissions, status
+from rest_framework.views import APIView
 
 from apps.user_authentication.infrastructure.models import Agreements, TenantInvitation
 from apps.user_authentication.interface.serializers import LeaseManagementSerializer
+from common.constants import Error, Success
+from common.utils import CustomResponse
 
 
 class LeaseManagementView(APIView):
@@ -18,6 +14,7 @@ class LeaseManagementView(APIView):
     API view to manage lease agreements (end or renew).
     Takes invitation_id and action (end/renew) to either end the lease or extend it.
     """
+
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = LeaseManagementSerializer
 
@@ -43,10 +40,7 @@ class LeaseManagementView(APIView):
         """
         serializer = self.serializer_class(data=request.data)
         if not serializer.is_valid():
-            return CustomResponse(
-                {"error": serializer.errors},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return CustomResponse({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
         invitation_id = serializer.validated_data['invitation_id']
         action = serializer.validated_data['action']
@@ -54,10 +48,7 @@ class LeaseManagementView(APIView):
         try:
             invitation = TenantInvitation.objects.get(id=invitation_id, sender=request.user)
         except TenantInvitation.DoesNotExist:
-            return CustomResponse(
-                {"error": Error.TENANT_INVITATION_NOT_FOUND},
-                status=status.HTTP_404_NOT_FOUND
-            )
+            return CustomResponse({"error": Error.TENANT_INVITATION_NOT_FOUND}, status=status.HTTP_404_NOT_FOUND)
 
         try:
             if action == 'end':
@@ -78,10 +69,7 @@ class LeaseManagementView(APIView):
                         assigned_obj.status = 'vacant'
                         assigned_obj.save(update_fields=['status'])
 
-                return CustomResponse(
-                    {"message": Success.LEASE_ENDED_SUCCESSFULLY},
-                    status=status.HTTP_200_OK
-                )
+                return CustomResponse({"message": Success.LEASE_ENDED_SUCCESSFULLY}, status=status.HTTP_200_OK)
 
             elif action == 'renew':
                 # Renew lease scenario
@@ -92,22 +80,13 @@ class LeaseManagementView(APIView):
                     invitation.security_deposit = serializer.validated_data.get('security_deposit', invitation.security_deposit)
                     invitation.lease_start_date = serializer.validated_data['lease_start_date']
                     invitation.agreed = False
-                    invitation.save(update_fields=['lease_start_date', 'lease_end_date', 'lease_amount',
-                                                   'security_deposit', 'agreed', 'updated_at'])
-                    Agreements.objects.create(
-                        invitation=invitation,
-                        lease_agreement=serializer.validated_data['lease_agreement']
+                    invitation.save(
+                        update_fields=['lease_start_date', 'lease_end_date', 'lease_amount', 'security_deposit', 'agreed', 'updated_at']
                     )
+                    Agreements.objects.create(invitation=invitation, lease_agreement=serializer.validated_data['lease_agreement'])
 
-                return CustomResponse(
-                    {"message": Success.LEASE_RENEWED_SUCCESSFULLY},
-                    status=status.HTTP_200_OK
-                )
+                return CustomResponse({"message": Success.LEASE_RENEWED_SUCCESSFULLY}, status=status.HTTP_200_OK)
 
         except Exception as e:
             error_message = Error.LEASE_END_FAILED if action == 'end' else Error.LEASE_RENEWAL_FAILED
-            return CustomResponse(
-                {"error": error_message.format(str(e))},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
-
+            return CustomResponse({"error": error_message.format(str(e))}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

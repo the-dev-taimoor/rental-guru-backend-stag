@@ -1,21 +1,21 @@
-from rest_framework.views import APIView
 import json
 
-from apps.properties.infrastructure.models import Property, PropertyDocument, Unit
-from apps.properties.interface.serializers import DocumentCreateSerializer, UploadDocumentFormSerializer, DocumentRetrieveSerializer
-from apps.properties.application.pagination import DocumentsPagination
-from rest_framework.permissions import IsAuthenticated
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import OrderingFilter
-from apps.properties.infrastructure.filters import DocumentFilter
-
-from common.utils import CustomResponse
-from common.constants import Success, Error
-from rest_framework import status
-from rest_framework.parsers import MultiPartParser, FormParser
 from django.db.models import Q
-from rest_framework.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import status
+from rest_framework.exceptions import ValidationError
+from rest_framework.filters import OrderingFilter
+from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+
+from apps.properties.application.pagination import DocumentsPagination
+from apps.properties.infrastructure.filters import DocumentFilter
+from apps.properties.infrastructure.models import Property, PropertyDocument, Unit
+from apps.properties.interface.serializers import DocumentCreateSerializer, DocumentRetrieveSerializer, UploadDocumentFormSerializer
+from common.constants import Error, Success
+from common.utils import CustomResponse
 
 
 class PropertyDocumentViewSet2(APIView):
@@ -35,14 +35,13 @@ class PropertyDocumentViewSet2(APIView):
             Q(property_id=property_id) & Q(unit_id=unit_id) & Q(document_type__in=document_types_to_check)
         )
         if existing_documents.exists():
-            raise ValidationError(
-                Error.DOCUMENT_TYPE_EXISTS_V2.format(', '.join([e.document_type for e in existing_documents])))
+            raise ValidationError(Error.DOCUMENT_TYPE_EXISTS_V2.format(', '.join([e.document_type for e in existing_documents])))
 
     def post(self, request):
         existing_data = request.data.get('existing_data')
         data_to_update = []
         if request.data.get('existing_data'):
-                data_to_update = json.loads(existing_data).get('data') if existing_data else []
+            data_to_update = json.loads(existing_data).get('data') if existing_data else []
         updated_call = False
         serializer = UploadDocumentFormSerializer(data=request.data)
         if not serializer.is_valid(raise_exception=True):
@@ -68,8 +67,7 @@ class PropertyDocumentViewSet2(APIView):
             if not documents:
                 return CustomResponse({"error": Error.DOCUMENTS_REQUIRED}, status=status.HTTP_400_BAD_REQUEST)
             if len(data) != len(documents):
-                return CustomResponse({"error": Error.DOCUMENT_DETAIL_MISSING},
-                                      status=status.HTTP_400_BAD_REQUEST)
+                return CustomResponse({"error": Error.DOCUMENT_DETAIL_MISSING}, status=status.HTTP_400_BAD_REQUEST)
 
             for index, item in enumerate(data):
                 document_data = item
@@ -94,9 +92,7 @@ class PropertyDocumentViewSet2(APIView):
 
     def check_document_exists_update_case(self, data, property_id, unit_id):
         existing_docs_ids = [d.get('id') for d in data if d.get('id')]
-        existing_docs = PropertyDocument.objects.filter(id__in=existing_docs_ids,
-                                                        property=property_id,
-                                                        unit=unit_id)
+        existing_docs = PropertyDocument.objects.filter(id__in=existing_docs_ids, property=property_id, unit=unit_id)
 
         # Check if all IDs from payload exist in database
         db_doc_ids = set(existing_docs.values_list('id', flat=True))
@@ -112,8 +108,7 @@ class PropertyDocumentViewSet2(APIView):
             Q(property_id=property_id) & Q(unit_id=unit_id) & Q(document_type__in=document_types_to_check)
         )
         if existing_documents.exists():
-            raise ValidationError(
-                Error.DOCUMENT_TYPE_EXISTS_V2.format(', '.join([e.document_type for e in existing_documents])))
+            raise ValidationError(Error.DOCUMENT_TYPE_EXISTS_V2.format(', '.join([e.document_type for e in existing_documents])))
 
     def update_document(self, document_data, saved_documents):
         property_document = PropertyDocument.objects.get(id=document_data.get('id'))
@@ -125,12 +120,14 @@ class PropertyDocumentViewSet2(APIView):
         saved_documents.append(property_document_serialized.data)
 
     def create_document(self, document_data, document_file, saved_documents, property_id, unit_id):
-        req_data = {"unit": unit_id,
-                    "property": property_id,
-                    "document": document_file,
-                    "title": document_data.get('title'),
-                    "visibility": document_data.get('visibility'),
-                    "document_type": document_data.get('document_type')}
+        req_data = {
+            "unit": unit_id,
+            "property": property_id,
+            "document": document_file,
+            "title": document_data.get('title'),
+            "visibility": document_data.get('visibility'),
+            "document_type": document_data.get('document_type'),
+        }
 
         serializer = self.serializer_class(data=req_data)
         serializer.is_valid(raise_exception=True)
@@ -148,8 +145,7 @@ class PropertyDocumentViewSet2(APIView):
             return CustomResponse({"error": Error.DOCUMENT_NOT_FOUND}, status=status.HTTP_404_NOT_FOUND)
 
         if document.property.property_owner != request.user:
-            return CustomResponse({"error": Error.DOCUMENT_DELETE_PERMISSION},
-                                status=status.HTTP_403_FORBIDDEN)
+            return CustomResponse({"error": Error.DOCUMENT_DELETE_PERMISSION}, status=status.HTTP_403_FORBIDDEN)
 
         document.delete()
 

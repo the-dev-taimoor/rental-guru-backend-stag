@@ -1,5 +1,7 @@
-from rest_framework import viewsets, status
+from rest_framework import status, viewsets
+
 from common.utils import CustomResponse
+
 
 class GeneralViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):

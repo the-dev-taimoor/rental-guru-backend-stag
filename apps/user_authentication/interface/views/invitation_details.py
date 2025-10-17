@@ -1,13 +1,11 @@
-from rest_framework.views import APIView
-from rest_framework import status
-
 from django.utils import timezone
+from rest_framework import status
+from rest_framework.views import APIView
 
-from common.constants import Success, Error
+from apps.user_authentication.infrastructure.models import TenantInvitation, VendorInvitation
+from apps.user_authentication.interface.serializers import InvitationAcceptanceSerializer, InvitationDetailsSerializer
+from common.constants import Error, Success
 from common.utils import CustomResponse
-
-from apps.user_authentication.infrastructure.models import VendorInvitation, TenantInvitation
-from apps.user_authentication.interface.serializers import InvitationDetailsSerializer, InvitationAcceptanceSerializer
 
 
 class InvitationDetailsView(APIView):
@@ -17,6 +15,7 @@ class InvitationDetailsView(APIView):
 
     URL: GET /v1/api/invitation-details/{invitation_id}/?vendor=true&tenant=false
     """
+
     permission_classes = []
 
     def get(self, request, invitation_id):
@@ -34,10 +33,7 @@ class InvitationDetailsView(APIView):
         tenant = request.query_params.get('tenant', '').lower() == 'true'
 
         if not vendor and not tenant:
-            return CustomResponse(
-                {"error": Error.INVALID_INVITATION_TYPE},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return CustomResponse({"error": Error.INVALID_INVITATION_TYPE}, status=status.HTTP_400_BAD_REQUEST)
 
         invitation = None
 
@@ -47,42 +43,24 @@ class InvitationDetailsView(APIView):
                 invitation = VendorInvitation.objects.get(id=invitation_id)
             except VendorInvitation.DoesNotExist:
                 if not tenant:  # If only vendor was requested and not found
-                    return CustomResponse(
-                        {"error": Error.INVITATION_NOT_FOUND},
-                        status=status.HTTP_404_NOT_FOUND
-                    )
+                    return CustomResponse({"error": Error.INVITATION_NOT_FOUND}, status=status.HTTP_404_NOT_FOUND)
 
         # Try to fetch tenant invitation if tenant=true and vendor invitation not found
         if tenant and invitation is None:
             try:
                 invitation = TenantInvitation.objects.get(id=invitation_id)
             except TenantInvitation.DoesNotExist:
-                return CustomResponse(
-                    {"error": Error.INVITATION_NOT_FOUND},
-                    status=status.HTTP_404_NOT_FOUND
-                )
+                return CustomResponse({"error": Error.INVITATION_NOT_FOUND}, status=status.HTTP_404_NOT_FOUND)
 
         if invitation is None:
-            return CustomResponse(
-                {"error": Error.INVITATION_NOT_FOUND},
-                status=status.HTTP_404_NOT_FOUND
-            )
+            return CustomResponse({"error": Error.INVITATION_NOT_FOUND}, status=status.HTTP_404_NOT_FOUND)
 
         if invitation.expired_at and invitation.expired_at < timezone.now():
-            return CustomResponse(
-                {"error": Error.INVITATION_EXPIRED},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return CustomResponse({"error": Error.INVITATION_EXPIRED}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = InvitationDetailsSerializer(invitation)
 
-        return CustomResponse(
-            {
-                "message": Success.INVITATION_DETAILS_RETRIEVED,
-                "data": serializer.data
-            },
-            status=status.HTTP_200_OK
-        )
+        return CustomResponse({"message": Success.INVITATION_DETAILS_RETRIEVED, "data": serializer.data}, status=status.HTTP_200_OK)
 
     def put(self, request):
         """
@@ -100,10 +78,7 @@ class InvitationDetailsView(APIView):
         """
         serializer = InvitationAcceptanceSerializer(data=request.data)
         if not serializer.is_valid():
-            return CustomResponse(
-                {"error": serializer.errors},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return CustomResponse({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
         validated_data = serializer.validated_data
         invitation_id = validated_data['invitation_id']
@@ -116,30 +91,18 @@ class InvitationDetailsView(APIView):
             try:
                 invitation = VendorInvitation.objects.get(id=invitation_id)
             except VendorInvitation.DoesNotExist:
-                return CustomResponse(
-                    {"error": Error.VENDOR_INVITATION_NOT_FOUND},
-                    status=status.HTTP_404_NOT_FOUND
-                )
+                return CustomResponse({"error": Error.VENDOR_INVITATION_NOT_FOUND}, status=status.HTTP_404_NOT_FOUND)
         elif tenant:
             try:
                 invitation = TenantInvitation.objects.get(id=invitation_id)
             except TenantInvitation.DoesNotExist:
-                return CustomResponse(
-                    {"error": Error.TENANT_INVITATION_NOT_FOUND},
-                    status=status.HTTP_404_NOT_FOUND
-                )
+                return CustomResponse({"error": Error.TENANT_INVITATION_NOT_FOUND}, status=status.HTTP_404_NOT_FOUND)
 
         if invitation.expired_at and invitation.expired_at < timezone.now():
-            return CustomResponse(
-                {"error": Error.INVITATION_EXPIRED},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return CustomResponse({"error": Error.INVITATION_EXPIRED}, status=status.HTTP_400_BAD_REQUEST)
 
         if invitation.accepted and accept:
-            return CustomResponse(
-                {"error": Error.INVITATION_ALREADY_ACCEPTED},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return CustomResponse({"error": Error.INVITATION_ALREADY_ACCEPTED}, status=status.HTTP_400_BAD_REQUEST)
 
         invitation.accepted = accept
         invitation.save(update_fields=['accepted', 'updated_at'])
@@ -156,8 +119,4 @@ class InvitationDetailsView(APIView):
         else:
             message = Success.INVITATION_REJECTED
 
-        return CustomResponse(
-            {"message": message},
-            status=status.HTTP_200_OK
-        )
-
+        return CustomResponse({"message": message}, status=status.HTTP_200_OK)

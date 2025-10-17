@@ -1,24 +1,17 @@
-from datetime import datetime
-from datetime import timedelta
-
 from collections import defaultdict
+from datetime import datetime, timedelta
 
-from rest_framework.views import APIView
-from rest_framework import status, permissions
-from rest_framework.parsers import MultiPartParser
-
-from django.utils import timezone
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.utils import timezone
+from rest_framework import permissions, status
+from rest_framework.parsers import MultiPartParser
+from rest_framework.views import APIView
 
-from common.constants import Success, Error
-from common.utils import CustomResponse, get_presigned_url, send_email_, unsnake_case
-
-
-from apps.user_authentication.infrastructure.models import Vendor, VendorInvitation, LicenseAndCertificates, VendorServices
+from apps.user_authentication.infrastructure.models import LicenseAndCertificates, Vendor, VendorInvitation, VendorServices
 from apps.user_authentication.interface.serializers import BulkVendorInviteSerializer
-
-
+from common.constants import Error, Success
+from common.utils import CustomResponse, get_presigned_url, send_email_, unsnake_case
 
 
 class VendorDetailsByInvitationView(APIView):
@@ -28,6 +21,7 @@ class VendorDetailsByInvitationView(APIView):
 
     URL: GET /v1/api/user-authentication/invited-vendor-details/{invitation_id}/
     """
+
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, invitation_id):
@@ -46,47 +40,29 @@ class VendorDetailsByInvitationView(APIView):
         try:
             invitation = VendorInvitation.objects.get(id=invitation_id, sender=request.user)
         except VendorInvitation.DoesNotExist:
-            return CustomResponse(
-                {"error": Error.VENDOR_INVITATION_NOT_FOUND},
-                status=status.HTTP_404_NOT_FOUND
-            )
+            return CustomResponse({"error": Error.VENDOR_INVITATION_NOT_FOUND}, status=status.HTTP_404_NOT_FOUND)
 
         if not invitation.accepted:
-            return CustomResponse(
-                {"error": Error.VENDOR_INVITATION_NOT_ACCEPTED},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return CustomResponse({"error": Error.VENDOR_INVITATION_NOT_ACCEPTED}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             user = get_user_model().objects.get(email=invitation.email)
         except get_user_model().DoesNotExist:
-            return CustomResponse(
-                {"error": Error.VENDOR_NOT_FOUND_FOR_INVITATION},
-                status=status.HTTP_404_NOT_FOUND
-            )
+            return CustomResponse({"error": Error.VENDOR_NOT_FOUND_FOR_INVITATION}, status=status.HTTP_404_NOT_FOUND)
 
         try:
             vendor = Vendor.objects.get(user_id=user)
         except Vendor.DoesNotExist:
-            return CustomResponse(
-                {"error": Error.VENDOR_NOT_FOUND_FOR_INVITATION},
-                status=status.HTTP_404_NOT_FOUND
-            )
+            return CustomResponse({"error": Error.VENDOR_NOT_FOUND_FOR_INVITATION}, status=status.HTTP_404_NOT_FOUND)
 
         response_data = {
             'basic_info': self._get_basic_info(vendor, user),
             'vendor_info': self._get_vendor_info(vendor, user),
             'services': self._get_services_info(vendor),
-            'certification_info': self._get_certification_info(vendor)
+            'certification_info': self._get_certification_info(vendor),
         }
 
-        return CustomResponse(
-            {
-                "message": Success.VENDOR_DETAILS_RETRIEVED,
-                "data": response_data
-            },
-            status=status.HTTP_200_OK
-        )
+        return CustomResponse({"message": Success.VENDOR_DETAILS_RETRIEVED, "data": response_data}, status=status.HTTP_200_OK)
 
     def _get_basic_info(self, vendor, user):
         return {
@@ -94,7 +70,7 @@ class VendorDetailsByInvitationView(APIView):
             'vendor_role': vendor.vendor_role,
             'phone_number': user.phone_number or "Not provided",
             'email': user.email,
-            'description': vendor.description
+            'description': vendor.description,
         }
 
     def _get_vendor_info(self, vendor, user):
@@ -124,7 +100,7 @@ class VendorDetailsByInvitationView(APIView):
             'business_address': vendor.business_address or "Not provided",
             'business_type': vendor.business_type or "Not specified",
             'registration_id': vendor.company_registration_number or "Not provided",
-            'business_license': self._get_business_license_url(vendor)
+            'business_license': self._get_business_license_url(vendor),
         }
 
     def _get_business_license_url(self, vendor):
@@ -133,7 +109,7 @@ class VendorDetailsByInvitationView(APIView):
         for license in licenses:
             cert_data = {
                 'name': unsnake_case(license.document.name.split('/')[-1].split('.')[0]),
-                'url': get_presigned_url(license.document.name)
+                'url': get_presigned_url(license.document.name),
             }
             data.append(cert_data)
         return data
@@ -141,8 +117,7 @@ class VendorDetailsByInvitationView(APIView):
     def _get_services_info(self, vendor):
         """Get services information"""
         # Get vendor services
-        vendor_services = VendorServices.objects.filter(user_id=vendor.user_id) \
-            .select_related('category_id', 'subcategory_id')
+        vendor_services = VendorServices.objects.filter(user_id=vendor.user_id).select_related('category_id', 'subcategory_id')
 
         services_dict = defaultdict(list)
         for vs in vendor_services:
@@ -155,19 +130,23 @@ class VendorDetailsByInvitationView(APIView):
     def _get_certification_info(self, vendor):
         """Get certification information"""
         data = []
-        certificates = LicenseAndCertificates.objects.filter(user_id=vendor.user_id, profile_type='vendor', document_type='insurance_certificate')
+        certificates = LicenseAndCertificates.objects.filter(
+            user_id=vendor.user_id, profile_type='vendor', document_type='insurance_certificate'
+        )
         for certificate in certificates:
             cert_data = {
                 'name': unsnake_case(certificate.document.name.split('/')[-1].split('.')[0]),
-                'url': get_presigned_url(certificate.document.name)
+                'url': get_presigned_url(certificate.document.name),
             }
             data.append(cert_data)
 
-        certificates = LicenseAndCertificates.objects.filter(user_id=vendor.user_id, profile_type='vendor', document_type='other_certificate')
+        certificates = LicenseAndCertificates.objects.filter(
+            user_id=vendor.user_id, profile_type='vendor', document_type='other_certificate'
+        )
         for certificate in certificates:
             cert_data = {
                 'name': unsnake_case(certificate.document.name.split('/')[-1].split('.')[0]),
-                'url': get_presigned_url(certificate.document.name)
+                'url': get_presigned_url(certificate.document.name),
             }
             data.append(cert_data)
         return data
@@ -180,10 +159,7 @@ class BulkVendorInviteAPIView(APIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if not serializer.is_valid(raise_exception=True):
-            return CustomResponse(
-                {"error": serializer.errors},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return CustomResponse({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         vendors_invited = list()
         all_errors = list()
         all_vendors = serializer.validated_data
@@ -208,8 +184,12 @@ class BulkVendorInviteAPIView(APIView):
                 if VendorInvitation.objects.filter(email=email, sender=request.user, role=role, expired_at__gte=timezone.now()).exists():
                     all_errors.append(Error.VENDOR_INVITATION_ALREADY_SENT.format(email, role))
                     continue
-                if VendorInvitation.objects.filter(email=email, sender=request.user, role=role, expired_at__lte=timezone.now(), accepted=False).exists():
-                    VendorInvitation.objects.filter(email=email, sender=request.user, role=role, expired_at__lte=timezone.now(), accepted=False).delete()
+                if VendorInvitation.objects.filter(
+                    email=email, sender=request.user, role=role, expired_at__lte=timezone.now(), accepted=False
+                ).exists():
+                    VendorInvitation.objects.filter(
+                        email=email, sender=request.user, role=role, expired_at__lte=timezone.now(), accepted=False
+                    ).delete()
 
             try:
                 invitation = VendorInvitation.objects.create(
@@ -218,14 +198,14 @@ class BulkVendorInviteAPIView(APIView):
                     last_name=last_name,
                     email=email,
                     role=role,
-                    expired_at=timezone.now() + timedelta(days=5)
+                    expired_at=timezone.now() + timedelta(days=5),
                 )
 
                 email_variables = {
                     'VENDOR_FIRST_NAME': first_name,
                     'VENDOR_LAST_NAME': last_name,
                     'VENDOR_ROLE': role,
-                    'SETUP_LINK': f"{settings.FRONTEND_DOMAIN}/auth/signup?vendor=true&invitation_id={invitation.id}"
+                    'SETUP_LINK': f"{settings.FRONTEND_DOMAIN}/auth/signup?vendor=true&invitation_id={invitation.id}",
                 }
 
                 send_email_(email, email_variables, 'INVITE-VENDOR')
@@ -240,11 +220,5 @@ class BulkVendorInviteAPIView(APIView):
                 all_errors.append(Error.VENDOR_INVITATION_SEND_FAILED.format(str(e)))
         data_ = Error.INVITATION_SENT_TO_EMAIL.format(', '.join(vendors_invited)) if vendors_invited else {}
         return CustomResponse(
-            {
-                "message": Success.VENDOR_INVITATION_SENT,
-                "data": data_,
-                "error": all_errors
-            },
-            status=status.HTTP_201_CREATED
+            {"message": Success.VENDOR_INVITATION_SENT, "data": data_, "error": all_errors}, status=status.HTTP_201_CREATED
         )
-

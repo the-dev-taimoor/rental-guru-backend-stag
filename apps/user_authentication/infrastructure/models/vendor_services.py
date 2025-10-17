@@ -1,5 +1,6 @@
-from django.db import models
 from django.conf import settings
+from django.db import models
+
 from .service_category import ServiceCategory
 from .service_subcategory import ServiceSubCategory
 

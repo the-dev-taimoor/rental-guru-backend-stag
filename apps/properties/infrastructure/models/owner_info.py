@@ -1,5 +1,6 @@
-from django.db import models
 from django.contrib.auth import get_user_model
+from django.db import models
+
 from .property import Property
 
 User = get_user_model()
@@ -7,7 +8,7 @@ User = get_user_model()
 
 class OwnerInfo(models.Model):
     property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='property_owned')
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner_detail') # one who is inviting
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner_detail')  # one who is inviting
     email = models.EmailField()
     percentage = models.CharField(max_length=10)
     emergency_person = models.CharField(max_length=255, blank=True, null=True)

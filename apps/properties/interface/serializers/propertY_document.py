@@ -31,7 +31,6 @@ class PropertyDocumentSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         unit = data.get('unit')
-        if PropertyDocument.objects.filter(property=data['property'], unit=unit,
-                                           document_type=data['document_type']).exists():
+        if PropertyDocument.objects.filter(property=data['property'], unit=unit, document_type=data['document_type']).exists():
             raise serializers.ValidationError(Error.DOCUMENT_TYPE_EXISTS)
         return data

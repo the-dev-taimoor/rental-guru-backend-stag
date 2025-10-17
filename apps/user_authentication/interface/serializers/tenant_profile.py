@@ -1,5 +1,7 @@
 from rest_framework import serializers
+
 from apps.user_authentication.infrastructure.models import Tenant
+
 
 class TenantProfileSerializer(serializers.ModelSerializer):
 
@@ -22,8 +24,7 @@ class TenantProfileSerializer(serializers.ModelSerializer):
         for preference in value:
             if preference not in valid_choices:
                 raise serializers.ValidationError(
-                    f"'{preference}' is not a valid investment preference. "
-                    f"Valid choices are: {', '.join(valid_choices)}"
+                    f"'{preference}' is not a valid investment preference. " f"Valid choices are: {', '.join(valid_choices)}"
                 )
 
         return list(dict.fromkeys(value))

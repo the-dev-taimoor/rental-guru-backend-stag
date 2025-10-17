@@ -1,14 +1,13 @@
 from rest_framework import status
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView
 
+from apps.user_authentication.application.services.otp import otp_email
+from apps.user_authentication.interface.serializers import CustomTokenObtainPairSerializer
 from common.constants import Success
 from common.utils import CustomResponse
-
-from apps.user_authentication.interface.serializers import CustomTokenObtainPairSerializer
-from apps.user_authentication.application.services.otp import otp_email
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -30,9 +29,6 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             return CustomResponse({'message': Success.VERIFICATION_CODE_SENT}, status=status.HTTP_200_OK)
         else:
             refresh = RefreshToken.for_user(user)
-            response_data = {
-                "refresh_token": str(refresh),
-                "access_token": str(refresh.access_token)
-            }
+            response_data = {"refresh_token": str(refresh), "access_token": str(refresh.access_token)}
 
         return CustomResponse({'data': response_data}, status=status.HTTP_200_OK)

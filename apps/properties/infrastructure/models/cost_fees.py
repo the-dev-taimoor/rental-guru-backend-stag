@@ -1,5 +1,7 @@
 from django.db import models
+
 from .cost_fees_category import CostFeesCategory
+
 
 class CostFee(models.Model):
     category = models.ForeignKey(CostFeesCategory, on_delete=models.CASCADE, related_name='fees')
@@ -8,8 +10,8 @@ class CostFee(models.Model):
         ('one_time', "One Time"),
         ('monthly', "Monthly"),
         ('per_use', "Per Use"),
-        ('quarterly', "Quarterly"), # university_housing
-        ('yearly', "Yearly"), # university_housing
+        ('quarterly', "Quarterly"),  # university_housing
+        ('yearly', "Yearly"),  # university_housing
     ]
     payment_frequency = models.CharField(max_length=50, choices=payment_frequency_by_choices)
     fee_amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)

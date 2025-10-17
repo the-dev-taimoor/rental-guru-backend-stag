@@ -1,13 +1,16 @@
-from pathlib import Path
-from datetime import timedelta
-from dotenv import dotenv_values
 import os
+from datetime import timedelta
+from pathlib import Path
+
+from dotenv import dotenv_values
 
 # Load .env values
 env_values = dotenv_values()
 
+
 def get_env_value(key, default=None):
     return os.environ.get(key, env_values.get(key, default))
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -15,14 +18,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 log_directory = os.path.join(BASE_DIR, 'logs')
 log_file = os.path.join(log_directory, 'error.log')
 
+
 class BaseSettings:
     """
     Base Django settings class.
     Loads environment variables from .env and provides sane defaults.
     """
 
-    BASE_DIR=BASE_DIR
-    LOG_DIR=log_directory
+    BASE_DIR = BASE_DIR
+    LOG_DIR = log_directory
     # Quick-start development settings - unsuitable for production
     # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -65,13 +69,11 @@ class BaseSettings:
         "drf_yasg",
         "corsheaders",
         "storages",
-        "apps.properties"
+        "apps.properties",
     ]
 
     REST_FRAMEWORK = {
-        'DEFAULT_AUTHENTICATION_CLASSES': (
-            'rest_framework_simplejwt.authentication.JWTAuthentication',
-        ),
+        'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework_simplejwt.authentication.JWTAuthentication',),
         'EXCEPTION_HANDLER': 'common.utils.custom_exception_handler',
     }
 
@@ -113,7 +115,6 @@ class BaseSettings:
 
     WSGI_APPLICATION = "config.wsgi.application"
 
-
     # Database
     # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
@@ -145,7 +146,6 @@ class BaseSettings:
         },
     ]
 
-
     # Internationalization
     # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -156,7 +156,6 @@ class BaseSettings:
     USE_I18N = True
 
     USE_TZ = True
-
 
     # Static files (CSS, JavaScript, Images)
     # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -178,7 +177,7 @@ class BaseSettings:
                 'type': 'apiKey',
                 'name': 'Authorization',
                 'in': 'header',
-                'description': 'JWT Authorization header using the Bearer scheme. Example: "Bearer <token>"'
+                'description': 'JWT Authorization header using the Bearer scheme. Example: "Bearer <token>"',
             }
         }
     }
@@ -194,7 +193,6 @@ class BaseSettings:
     MEDIA_URL = '/media/'
     MEDIA_ROOT = BASE_DIR / 'media'
 
-
     AWS_ACCESS_KEY_ID = env_values["AWS_ACCESS_KEY_ID"]
     AWS_SECRET_ACCESS_KEY = env_values["AWS_SECRET_ACCESS_KEY"]
     AWS_STORAGE_BUCKET_NAME = env_values["AWS_STORAGE_BUCKET_NAME"]
@@ -208,4 +206,3 @@ class BaseSettings:
     DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
 
     ENV = env_values["ENV"]
-

@@ -1,10 +1,13 @@
 from rest_framework import serializers
+
 from common.constants import Error
+
 
 class LeaseManagementSerializer(serializers.Serializer):
     """
     Serializer for managing lease agreements (end or renew).
     """
+
     invitation_id = serializers.IntegerField(required=True)
     action = serializers.ChoiceField(choices=['end', 'renew'], required=True)
     lease_start_date = serializers.DateField(required=False)
@@ -12,7 +15,6 @@ class LeaseManagementSerializer(serializers.Serializer):
     rent_amount = serializers.IntegerField(required=False)
     security_deposit = serializers.IntegerField(required=False)
     lease_agreement = serializers.FileField(required=False)
-
 
     def validate(self, attrs):
         action = attrs.get('action')

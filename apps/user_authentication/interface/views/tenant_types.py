@@ -1,15 +1,15 @@
+from rest_framework import permissions, status
 from rest_framework.views import APIView
-from rest_framework import status, permissions
-
-from common.utils import CustomResponse
 
 from apps.user_authentication.infrastructure.models import TenantInvitation
+from common.utils import CustomResponse
 
 
 class TenantTypesView(APIView):
     """
     API view to get all available tenant types.
     """
+
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
@@ -19,4 +19,3 @@ class TenantTypesView(APIView):
             tenant_types.append({'value': tenant_type_value, 'label': tenant_type_display})
 
         return CustomResponse({"message": "Tenant types retrieved successfully.", "data": tenant_types}, status=status.HTTP_200_OK)
-

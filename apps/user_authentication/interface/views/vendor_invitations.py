@@ -1,20 +1,19 @@
 from datetime import timedelta
-from rest_framework.views import APIView
-from rest_framework import status, permissions
-from rest_framework.filters import OrderingFilter
 
-from django.utils import timezone
-from django_filters.rest_framework import DjangoFilterBackend
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.utils import timezone
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import permissions, status
+from rest_framework.filters import OrderingFilter
+from rest_framework.views import APIView
 
-from common.constants import Success, Error
-from common.filters import CustomSearchFilter
-from common.utils import CustomResponse, send_email_
-
+from apps.user_authentication.application.pagination import VendorInvitationPagination
 from apps.user_authentication.infrastructure.models import Vendor, VendorInvitation
 from apps.user_authentication.interface.serializers import VendorInvitationSerializer
-from apps.user_authentication.application.pagination import VendorInvitationPagination
+from common.constants import Error, Success
+from common.filters import CustomSearchFilter
+from common.utils import CustomResponse, send_email_
 
 
 class VendorInvitationView(APIView):
@@ -23,6 +22,7 @@ class VendorInvitationView(APIView):
     Accepts first_name, last_name, email, and role in the payload.
     Supports search functionality for vendor name, email, and role.
     """
+
     queryset = VendorInvitation.objects.all()
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = VendorInvitationSerializer
@@ -62,25 +62,26 @@ class VendorInvitationView(APIView):
 
         if VendorInvitation.objects.filter(email=email, sender=request.user, role=role).exists():
             if VendorInvitation.objects.filter(email=email, sender=request.user, role=role, accepted=True).exists():
-                return CustomResponse({"error": Error.VENDOR_INVITATION_ALREADY_ACCEPTED.format(email, role)},
-                                      status=status.HTTP_400_BAD_REQUEST)
+                return CustomResponse(
+                    {"error": Error.VENDOR_INVITATION_ALREADY_ACCEPTED.format(email, role)}, status=status.HTTP_400_BAD_REQUEST
+                )
             if VendorInvitation.objects.filter(email=email, sender=request.user, role=role, expired_at__gte=timezone.now()).exists():
-                return CustomResponse({"error": Error.VENDOR_INVITATION_ALREADY_SENT.format(email, role)},
-                                      status=status.HTTP_400_BAD_REQUEST)
-            if VendorInvitation.objects.filter(email=email, sender=request.user, role=role, expired_at__lte=timezone.now(), accepted=False).exists():
-                VendorInvitation.objects.filter(email=email, sender=request.user, role=role, expired_at__lte=timezone.now(), accepted=False).delete()
-
+                return CustomResponse(
+                    {"error": Error.VENDOR_INVITATION_ALREADY_SENT.format(email, role)}, status=status.HTTP_400_BAD_REQUEST
+                )
+            if VendorInvitation.objects.filter(
+                email=email, sender=request.user, role=role, expired_at__lte=timezone.now(), accepted=False
+            ).exists():
+                VendorInvitation.objects.filter(
+                    email=email, sender=request.user, role=role, expired_at__lte=timezone.now(), accepted=False
+                ).delete()
 
         if not serializer.is_valid():
             if 'must make a unique set' in str(serializer.errors):
                 return CustomResponse(
-                    {"error": Error.VENDOR_INVITATION_ALREADY_SENT.format(email, role_display)},
-                    status=status.HTTP_400_BAD_REQUEST
+                    {"error": Error.VENDOR_INVITATION_ALREADY_SENT.format(email, role_display)}, status=status.HTTP_400_BAD_REQUEST
                 )
-            return CustomResponse(
-                {"error": serializer.errors},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return CustomResponse({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
         validated_data = serializer.validated_data
         first_name = validated_data['first_name']
@@ -95,14 +96,14 @@ class VendorInvitationView(APIView):
                 last_name=last_name,
                 email=email,
                 role=role,
-                expired_at=timezone.now() + timedelta(days=5)
+                expired_at=timezone.now() + timedelta(days=5),
             )
 
             email_variables = {
                 'VENDOR_FIRST_NAME': first_name,
                 'VENDOR_LAST_NAME': last_name,
                 'VENDOR_ROLE': role,
-                'SETUP_LINK': f"{settings.FRONTEND_DOMAIN}/auth/signup?vendor=true&invitation_id={invitation.id}"
+                'SETUP_LINK': f"{settings.FRONTEND_DOMAIN}/auth/signup?vendor=true&invitation_id={invitation.id}",
             }
 
             send_email_(email, email_variables, 'INVITE-VENDOR')
@@ -113,28 +114,20 @@ class VendorInvitationView(APIView):
                 'last_name': invitation.last_name,
                 'email': invitation.email,
                 'role': invitation.role,
-                'created_at': invitation.created_at
+                'created_at': invitation.created_at,
             }
 
-            return CustomResponse(
-                {
-                    "message": Success.VENDOR_INVITATION_SENT,
-                    "data": response_data
-                },
-                status=status.HTTP_201_CREATED
-            )
+            return CustomResponse({"message": Success.VENDOR_INVITATION_SENT, "data": response_data}, status=status.HTTP_201_CREATED)
 
         except Exception as e:
             # Handle IntegrityError for duplicate invitations
             if 'UNIQUE constraint failed' in str(e) or 'duplicate key value' in str(e):
                 role_display = dict(VendorInvitation.VENDOR_ROLE_CHOICES).get(role, role)
                 return CustomResponse(
-                    {"error": Error.VENDOR_INVITATION_ALREADY_SENT.format(email, role_display)},
-                    status=status.HTTP_400_BAD_REQUEST
+                    {"error": Error.VENDOR_INVITATION_ALREADY_SENT.format(email, role_display)}, status=status.HTTP_400_BAD_REQUEST
                 )
             return CustomResponse(
-                {"error": Error.VENDOR_INVITATION_SEND_FAILED.format(str(e))},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                {"error": Error.VENDOR_INVITATION_SEND_FAILED.format(str(e))}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
     def get(self, request):
@@ -145,16 +138,18 @@ class VendorInvitationView(APIView):
 
         invitation_data = []
         for invitation in result_page:
-            invitation_data.append({
-                'id': invitation.id,
-                'first_name': invitation.first_name,
-                'last_name': invitation.last_name,
-                'email': invitation.email,
-                'role': invitation.role,
-                'accepted': invitation.accepted,
-                'blocked': invitation.blocked,
-                'created_at': invitation.created_at
-            })
+            invitation_data.append(
+                {
+                    'id': invitation.id,
+                    'first_name': invitation.first_name,
+                    'last_name': invitation.last_name,
+                    'email': invitation.email,
+                    'role': invitation.role,
+                    'accepted': invitation.accepted,
+                    'blocked': invitation.blocked,
+                    'created_at': invitation.created_at,
+                }
+            )
 
         return paginator.get_paginated_response(invitation_data)
 
@@ -166,10 +161,7 @@ class VendorInvitationView(APIView):
         try:
             invitation = VendorInvitation.objects.get(id=invitation_id, sender=request.user)
         except VendorInvitation.DoesNotExist:
-            return CustomResponse(
-                {"error": Error.VENDOR_INVITATION_NOT_FOUND},
-                status=status.HTTP_404_NOT_FOUND
-            )
+            return CustomResponse({"error": Error.VENDOR_INVITATION_NOT_FOUND}, status=status.HTTP_404_NOT_FOUND)
 
         try:
             email = invitation.email
@@ -183,21 +175,13 @@ class VendorInvitationView(APIView):
             invitation.delete()
 
             return CustomResponse(
-                {
-                    "message": Success.VENDOR_INVITATION_DELETED,
-                    "data": {
-                        "invitation_id": invitation_id,
-                        "email": email,
-                        "deleted": True
-                    }
-                },
-                status=status.HTTP_200_OK
+                {"message": Success.VENDOR_INVITATION_DELETED, "data": {"invitation_id": invitation_id, "email": email, "deleted": True}},
+                status=status.HTTP_200_OK,
             )
 
         except Exception as e:
             return CustomResponse(
-                {"error": Error.VENDOR_INVITATION_DELETE_FAILED.format(str(e))},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                {"error": Error.VENDOR_INVITATION_DELETE_FAILED.format(str(e))}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
     def patch(self, request):
@@ -238,20 +222,11 @@ class VendorInvitationView(APIView):
             message = Success.VENDOR_INVITATION_BLOCKED if blocked else Success.VENDOR_INVITATION_UNBLOCKED
 
             return CustomResponse(
-                {
-                    "message": message,
-                    "data": {
-                        "id": invitation.id,
-                        "email": invitation.email,
-                        "blocked": invitation.blocked
-                    }
-                },
-                status=status.HTTP_200_OK
+                {"message": message, "data": {"id": invitation.id, "email": invitation.email, "blocked": invitation.blocked}},
+                status=status.HTTP_200_OK,
             )
 
         except Exception as e:
             return CustomResponse(
-                {"error": Error.VENDOR_INVITATION_BLOCK_FAILED.format(str(e))},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                {"error": Error.VENDOR_INVITATION_BLOCK_FAILED.format(str(e))}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-

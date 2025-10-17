@@ -1,5 +1,7 @@
 from rest_framework import serializers
+
 from apps.user_authentication.infrastructure.models import VendorInvitation
+
 
 class VendorInvitationSerializer(serializers.ModelSerializer):
     class Meta:

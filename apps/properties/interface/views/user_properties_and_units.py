@@ -1,14 +1,13 @@
 from rest_framework import status
-from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 
+from apps.properties.application.pagination import UserPropertiesAndUnitsPagination
+from apps.properties.infrastructure.models import Property, Unit
+from apps.properties.interface.serializers import UserPropertyUnitSerializer
 from common.constants import Success
 from common.filters import CustomSearchFilter
 from common.utils import CustomResponse
-
-from apps.properties.infrastructure.models import Property, Unit
-from apps.properties.interface.serializers import UserPropertyUnitSerializer
-from apps.properties.application.pagination import UserPropertiesAndUnitsPagination
 
 
 class UserPropertiesAndUnitsView(APIView):
@@ -18,6 +17,7 @@ class UserPropertiesAndUnitsView(APIView):
     For other property types: returns vacant units only
     Supports search functionality for property name, unit number, and type.
     """
+
     permission_classes = [IsAuthenticated]
     filter_backends = [CustomSearchFilter]
     search_fields = ['name', 'number', 'type']
@@ -32,19 +32,11 @@ class UserPropertiesAndUnitsView(APIView):
         for property_instance in properties:
             if property_instance.property_type == 'single_family_home':
                 if property_instance.status == 'vacant':
-                    result_data.append({
-                        'id': property_instance.id,
-                        'name': property_instance.name,
-                        'type': 'property'
-                    })
+                    result_data.append({'id': property_instance.id, 'name': property_instance.name, 'type': 'property'})
             else:
                 units = Unit.objects.filter(property=property_instance, status='vacant')
                 for unit in units:
-                    result_data.append({
-                        'id': unit.id,
-                        'name': f"{unit.number} - {property_instance.name}",
-                        'type': 'unit'
-                    })
+                    result_data.append({'id': unit.id, 'name': f"{unit.number} - {property_instance.name}", 'type': 'unit'})
 
         return result_data
 
@@ -58,8 +50,7 @@ class UserPropertiesAndUnitsView(APIView):
 
             for item in queryset:
                 # Search in name and type fields (following search_fields pattern)
-                if (search_lower in item['name'].lower() or
-                    search_lower in item['type'].lower()):
+                if search_lower in item['name'].lower() or search_lower in item['type'].lower():
                     filtered_data.append(item)
 
             return filtered_data
@@ -81,7 +72,4 @@ class UserPropertiesAndUnitsView(APIView):
 
         # Fallback if pagination fails
         serializer = UserPropertyUnitSerializer(filtered_queryset, many=True)
-        return CustomResponse({
-            'data': serializer.data,
-            'message': Success.USER_PROPERTIES_AND_UNITS_LIST
-        }, status=status.HTTP_200_OK)
+        return CustomResponse({'data': serializer.data, 'message': Success.USER_PROPERTIES_AND_UNITS_LIST}, status=status.HTTP_200_OK)

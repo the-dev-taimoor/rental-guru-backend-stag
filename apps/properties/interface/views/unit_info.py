@@ -1,21 +1,23 @@
+from datetime import datetime
+
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.exceptions import NotFound, PermissionDenied, ValidationError
+from rest_framework.filters import OrderingFilter
+from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
+from rest_framework.permissions import IsAuthenticated
+
+from apps.properties.application.pagination import UnitsPagination
+from apps.properties.infrastructure.filters import UnitFilter
+from apps.properties.infrastructure.models import Property, PropertyPhoto, Unit
+from apps.properties.interface.serializers import UnitSerializer, UnitUpdateSerializer
+from apps.user_authentication.application.permissions import IsKYCApproved, IsUnitOwner
+from common.constants import Error, Success
+from common.utils import CustomResponse
+
 from .general import GeneralViewSet
 
-from apps.properties.infrastructure.models import Property,Unit, PropertyPhoto
-from apps.properties.interface.serializers import UnitSerializer, UnitUpdateSerializer
-from apps.properties.application.pagination import UnitsPagination
-from rest_framework.permissions import IsAuthenticated
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import OrderingFilter
-from apps.properties.infrastructure.filters import UnitFilter
-from rest_framework.decorators import action
-
-from common.utils import CustomResponse
-from common.constants import Success, Error
-from rest_framework import status
-from datetime import datetime
-from apps.user_authentication.application.permissions import IsKYCApproved, IsUnitOwner
-from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
-from rest_framework.exceptions import NotFound, ValidationError, PermissionDenied
 
 class UnitInfoViewSet(GeneralViewSet):
     queryset = Unit.objects.all()
@@ -43,10 +45,7 @@ class UnitInfoViewSet(GeneralViewSet):
         for photo in photos:
             PropertyPhoto.objects.create(property=serializer.instance.property, unit=serializer.instance, photo=photo)
         self.perform_update(serializer)
-        return CustomResponse({
-            'message': Success.UNIT_INFO_UPDATED,
-            'data': serializer.data
-        }, status=status.HTTP_200_OK)
+        return CustomResponse({'message': Success.UNIT_INFO_UPDATED, 'data': serializer.data}, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['patch'], url_path='publish', permission_classes=[IsAuthenticated, IsKYCApproved, IsUnitOwner])
     def publish(self, request, pk=None):
@@ -66,8 +65,7 @@ class UnitInfoViewSet(GeneralViewSet):
 
         serializer = self.get_serializer(unit)
 
-        return CustomResponse({"message": Success.UNIT_PUBLISHED_STATUS, "data": serializer.data},
-                              status=status.HTTP_200_OK)
+        return CustomResponse({"message": Success.UNIT_PUBLISHED_STATUS, "data": serializer.data}, status=status.HTTP_200_OK)
 
     def get_queryset(self):
         # Skip during Swagger schema generation

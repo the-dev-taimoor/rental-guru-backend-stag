@@ -1,5 +1,5 @@
-from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from rest_framework import serializers
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -15,12 +15,21 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ['id', 'first_name', 'last_name', 'email', 'password', 'confirm_password', 'phone_number',
-                  'otp_enable', 'email_verified', 'page_saved', 'invitation_id', 'invitation_role']
-        extra_kwargs = {
-            'password': {'write_only': True},
-            'confirm_password': {'write_only': True}
-        }
+        fields = [
+            'id',
+            'first_name',
+            'last_name',
+            'email',
+            'password',
+            'confirm_password',
+            'phone_number',
+            'otp_enable',
+            'email_verified',
+            'page_saved',
+            'invitation_id',
+            'invitation_role',
+        ]
+        extra_kwargs = {'password': {'write_only': True}, 'confirm_password': {'write_only': True}}
 
     # Validation logic is okay inside serializers
     def validate(self, data):
@@ -37,7 +46,7 @@ class UserSerializer(serializers.ModelSerializer):
             username=validated_data['email'],
             email=validated_data['email'],
             password=validated_data['password'],
-            phone_number=validated_data['phone_number']
+            phone_number=validated_data['phone_number'],
         )
 
         user.first_name = validated_data['first_name']

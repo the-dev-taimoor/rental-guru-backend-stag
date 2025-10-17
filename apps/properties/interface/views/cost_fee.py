@@ -1,11 +1,11 @@
-from apps.properties.infrastructure.models import Property, CostFeesCategory, CostFee
-from apps.properties.interface.serializers import CostFeesCategorySerializer, CostFeeRetrieveSerializer, CostFeeSerializer
-from rest_framework.permissions import IsAuthenticated
-
-from common.utils import CustomResponse
-from common.constants import Success, Error
-from rest_framework.views import APIView
 from rest_framework.exceptions import NotFound, ValidationError
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+
+from apps.properties.infrastructure.models import CostFee, CostFeesCategory, Property
+from apps.properties.interface.serializers import CostFeeRetrieveSerializer, CostFeesCategorySerializer, CostFeeSerializer
+from common.constants import Error, Success
+from common.utils import CustomResponse
 
 
 class CostFeeViewSet(APIView):
@@ -89,10 +89,12 @@ class CostFeeViewSet(APIView):
             fees = cost_fee.get('fees')
             for fee in fees:
                 if not fee.get('id'):
-                    if CostFee.objects.filter(category__property=property_id,
-                                              category__unit=unit_id,
-                                              category__category_name=category_name,
-                                              fee_name=fee.get('fee_name')).exists():
+                    if CostFee.objects.filter(
+                        category__property=property_id,
+                        category__unit=unit_id,
+                        category__category_name=category_name,
+                        fee_name=fee.get('fee_name'),
+                    ).exists():
                         raise ValidationError(Error.COST_FEE_NAME_EXISTS.format(fee.get('fee_name')))
 
     def perform_custom_update(self, fee_id, fee, fees_data):
@@ -113,6 +115,6 @@ class CostFeeViewSet(APIView):
         fee_serializer = CostFeeSerializer(data=fee)
         fee_serializer.is_valid(raise_exception=True)
         new_fee_instance = CostFee.objects.create(**fee_serializer.validated_data)
-        
+
         response_serializer = CostFeeRetrieveSerializer(new_fee_instance)
         fees_data.append(response_serializer.data)

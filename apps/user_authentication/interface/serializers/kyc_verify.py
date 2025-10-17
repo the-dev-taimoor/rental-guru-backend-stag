@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from common.utils import get_presigned_url
+
 from apps.user_authentication.infrastructure.models import KYCRequest
+from common.utils import get_presigned_url
 
 
 class KYCVerifySerializer(serializers.ModelSerializer):

@@ -1,8 +1,11 @@
 from rest_framework import serializers
+
 from apps.user_authentication.infrastructure.models import Vendor
+
 
 class VendorBasicInfoSerializer(serializers.ModelSerializer):
     """Serializer for vendor basic information tab"""
+
     full_name = serializers.SerializerMethodField()
     phone_number = serializers.CharField(source='user_id.phone_number', read_only=True)
     email = serializers.CharField(source='user_id.email', read_only=True)
@@ -10,9 +13,15 @@ class VendorBasicInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vendor
         fields = [
-            'full_name', 'phone_number', 'email', 'years_of_experience',
-            'availability', 'emergency_services', 'languages', 'insurance_coverage',
-            'vendor_role'
+            'full_name',
+            'phone_number',
+            'email',
+            'years_of_experience',
+            'availability',
+            'emergency_services',
+            'languages',
+            'insurance_coverage',
+            'vendor_role',
         ]
 
     def get_full_name(self, obj):

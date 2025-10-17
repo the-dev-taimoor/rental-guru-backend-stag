@@ -1,15 +1,13 @@
-from rest_framework.views import APIView
-from rest_framework import status
-from rest_framework.exceptions import ValidationError, NotFound
-
-from drf_yasg.utils import swagger_auto_schema
 from django.contrib.auth import get_user_model
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import status
+from rest_framework.exceptions import NotFound, ValidationError
+from rest_framework.views import APIView
 
-from common.constants import Success, Error
-from common.utils import CustomResponse
-
-from apps.user_authentication.interface.serializers import OTPCreateSerializer, OTPEnableSerializer
 from apps.user_authentication.application.services.otp import otp_email
+from apps.user_authentication.interface.serializers import OTPCreateSerializer, OTPEnableSerializer
+from common.constants import Error, Success
+from common.utils import CustomResponse
 
 
 class OTPView(APIView):
@@ -39,8 +37,7 @@ class OTPView(APIView):
 
             if action not in ['SIGNUP', 'FORGOT-PASSWORD']:
                 if not user.otp_enable:
-                    return CustomResponse({'error': Error.OTP_NOT_ENABLED, 'success': False},
-                                          status=status.HTTP_400_BAD_REQUEST)
+                    return CustomResponse({'error': Error.OTP_NOT_ENABLED, 'success': False}, status=status.HTTP_400_BAD_REQUEST)
 
             otp_email(user, action=action)
 

@@ -1,14 +1,15 @@
-import pandas as pd
-from io import BytesIO
-from rest_framework import serializers
 from collections import defaultdict
+from io import BytesIO
 
+import pandas as pd
+from rest_framework import serializers
+
+from apps.properties.infrastructure.models import Property
+from apps.properties.utils import COLUMN_CONFIG, xlsx_sheet_names
 from common.constants import Error
 from common.exceptions import CustomValidationError
-from apps.properties.infrastructure.models import  Property
-from apps.properties.utils import xlsx_sheet_names, COLUMN_CONFIG
-
 from common.utils import snake_case, str_to_bool
+
 
 class BulkUnitImportSerializer(serializers.Serializer):
     property = serializers.IntegerField(required=True)

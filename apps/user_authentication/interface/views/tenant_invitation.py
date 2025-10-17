@@ -1,22 +1,20 @@
 from datetime import timedelta
 
-from rest_framework.views import APIView
-from rest_framework import status, permissions
-from rest_framework.filters import OrderingFilter
-
+from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
-from django.conf import settings
-
-from common.constants import Success, Error
-from common.filters import CustomSearchFilter
-from common.utils import CustomResponse, get_presigned_url, send_email_
+from rest_framework import permissions, status
+from rest_framework.filters import OrderingFilter
+from rest_framework.views import APIView
 
 from apps.properties.infrastructure.models import Property, Unit
-from apps.user_authentication.infrastructure.models import Agreements, Tenant, TenantInvitation
-from apps.user_authentication.interface.serializers import TenantInvitationSerializer, InvitationAgreementSerializer
 from apps.user_authentication.application.pagination import TenantInvitationPagination
+from apps.user_authentication.infrastructure.models import Agreements, Tenant, TenantInvitation
+from apps.user_authentication.interface.serializers import InvitationAgreementSerializer, TenantInvitationSerializer
+from common.constants import Error, Success
+from common.filters import CustomSearchFilter
+from common.utils import CustomResponse, get_presigned_url, send_email_
 
 
 class TenantInvitationView(APIView):
@@ -25,6 +23,7 @@ class TenantInvitationView(APIView):
     Accepts first_name, last_name, email, assignment_type, assignment_id, tenant_type, lease details in the payload.
     Supports search functionality for tenant name, email, and tenant_type.
     """
+
     queryset = TenantInvitation.objects.all()
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = TenantInvitationSerializer
@@ -95,8 +94,7 @@ class TenantInvitationView(APIView):
 
         # Check for existing invitations and clean up expired ones
         existing_invitation = TenantInvitation.objects.filter(
-            email=email, sender=request.user, tenant_type=tenant_type,
-            assignment_type=assignment_type, assignment_id=assignment_id
+            email=email, sender=request.user, tenant_type=tenant_type, assignment_type=assignment_type, assignment_id=assignment_id
         ).first()
 
         if existing_invitation:
@@ -106,7 +104,7 @@ class TenantInvitationView(APIView):
             elif existing_invitation.accepted:
                 return CustomResponse(
                     {"error": Error.TENANT_INVITATION_ALREADY_ACCEPTED.format(email, tenant_type_display, assignment_name)},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
             else:
                 # Clean up expired invitations for same email+tenant_type+sender+assignment
@@ -117,19 +115,16 @@ class TenantInvitationView(APIView):
                     assignment_type=assignment_type,
                     assignment_id=assignment_id,
                     expired_at__lte=timezone.now(),
-                    accepted=False
+                    accepted=False,
                 ).delete()
 
         if not serializer.is_valid():
             if 'must make a unique set' in str(serializer.errors):
                 return CustomResponse(
                     {"error": Error.TENANT_INVITATION_ALREADY_SENT.format(email, tenant_type_display, assignment_name)},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
-            return CustomResponse(
-                {"error": serializer.errors},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return CustomResponse({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
         validated_data = serializer.validated_data
         first_name = validated_data['first_name']
@@ -163,18 +158,15 @@ class TenantInvitationView(APIView):
                     security_deposit=security_deposit,
                     lease_start_date=lease_start_date,
                     lease_end_date=lease_end_date,
-                    expired_at=timezone.now() + timedelta(days=5)
+                    expired_at=timezone.now() + timedelta(days=5),
                 )
 
-                agreement = Agreements.objects.create(
-                    invitation=invitation,
-                    lease_agreement=lease_agreement
-                )
+                agreement = Agreements.objects.create(invitation=invitation, lease_agreement=lease_agreement)
 
             email_variables = {
                 'TENANT_FIRST_NAME': first_name,
                 'OWNER_NAME': owner_name,
-                'SETUP_LINK': f"{settings.FRONTEND_DOMAIN}/auth/signup?tenant=true&invitation_id={invitation.id}"
+                'SETUP_LINK': f"{settings.FRONTEND_DOMAIN}/auth/signup?tenant=true&invitation_id={invitation.id}",
             }
 
             send_email_(email, email_variables, 'INVITE-TENANT')
@@ -194,21 +186,14 @@ class TenantInvitationView(APIView):
                 'lease_start_date': invitation.lease_start_date,
                 'lease_end_date': invitation.lease_end_date,
                 'lease_ended': True if invitation.lease_end_date <= timezone.now().date() else False,
-                'created_at': invitation.created_at
+                'created_at': invitation.created_at,
             }
 
-            return CustomResponse(
-                {
-                    "message": Success.TENANT_INVITATION_SENT,
-                    "data": response_data
-                },
-                status=status.HTTP_201_CREATED
-            )
+            return CustomResponse({"message": Success.TENANT_INVITATION_SENT, "data": response_data}, status=status.HTTP_201_CREATED)
 
         except Exception as e:
             return CustomResponse(
-                {"error": Error.TENANT_INVITATION_SEND_FAILED.format(str(e))},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                {"error": Error.TENANT_INVITATION_SEND_FAILED.format(str(e))}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
     def get(self, request):
@@ -229,25 +214,27 @@ class TenantInvitationView(APIView):
                 elif invitation.assignment_type == 'unit':
                     assignment_name = f"{assigned_obj.number} - {assigned_obj.property.name}"
 
-            invitation_data.append({
-                'id': invitation.id,
-                'first_name': invitation.first_name,
-                'last_name': invitation.last_name,
-                'email': invitation.email,
-                'tenant_type': invitation.tenant_type,
-                'tenant_type_display': dict(TenantInvitation.TENANT_TYPE_CHOICES).get(invitation.tenant_type, invitation.tenant_type),
-                'assignment_type': invitation.assignment_type,
-                'assignment_id': invitation.assignment_id,
-                'assignment_name': assignment_name,
-                'lease_amount': invitation.lease_amount,
-                'security_deposit': invitation.security_deposit,
-                'lease_start_date': invitation.lease_start_date,
-                'lease_end_date': invitation.lease_end_date,
-                'lease_ended': True if invitation.lease_end_date <= timezone.now().date() else False,
-                'accepted': invitation.accepted,
-                'blocked': invitation.blocked,
-                'created_at': invitation.created_at
-            })
+            invitation_data.append(
+                {
+                    'id': invitation.id,
+                    'first_name': invitation.first_name,
+                    'last_name': invitation.last_name,
+                    'email': invitation.email,
+                    'tenant_type': invitation.tenant_type,
+                    'tenant_type_display': dict(TenantInvitation.TENANT_TYPE_CHOICES).get(invitation.tenant_type, invitation.tenant_type),
+                    'assignment_type': invitation.assignment_type,
+                    'assignment_id': invitation.assignment_id,
+                    'assignment_name': assignment_name,
+                    'lease_amount': invitation.lease_amount,
+                    'security_deposit': invitation.security_deposit,
+                    'lease_start_date': invitation.lease_start_date,
+                    'lease_end_date': invitation.lease_end_date,
+                    'lease_ended': True if invitation.lease_end_date <= timezone.now().date() else False,
+                    'accepted': invitation.accepted,
+                    'blocked': invitation.blocked,
+                    'created_at': invitation.created_at,
+                }
+            )
 
         return paginator.get_paginated_response(invitation_data)
 
@@ -261,10 +248,7 @@ class TenantInvitationView(APIView):
         """
         serializer = InvitationAgreementSerializer(data=request.data)
         if not serializer.is_valid():
-            return CustomResponse(
-                {"error": serializer.errors},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return CustomResponse({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
         validated_data = serializer.validated_data
         agreed = validated_data.get('agreed')
@@ -274,24 +258,15 @@ class TenantInvitationView(APIView):
         try:
             invitation = TenantInvitation.objects.get(id=invitation_id)
         except TenantInvitation.DoesNotExist:
-            return CustomResponse(
-                {"error": Error.INVITATION_NOT_FOUND},
-                status=status.HTTP_404_NOT_FOUND
-            )
+            return CustomResponse({"error": Error.INVITATION_NOT_FOUND}, status=status.HTTP_404_NOT_FOUND)
 
         try:
             agreement = Agreements.objects.get(invitation=invitation_id)
         except Agreements.DoesNotExist:
-            return CustomResponse(
-                {"error": Error.AGREEMENT_NOT_FOUND},
-                status=status.HTTP_404_NOT_FOUND
-            )
+            return CustomResponse({"error": Error.AGREEMENT_NOT_FOUND}, status=status.HTTP_404_NOT_FOUND)
 
         if invitation.expired_at and invitation.expired_at < timezone.now():
-            return CustomResponse(
-                {"error": Error.INVITATION_EXPIRED},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return CustomResponse({"error": Error.INVITATION_EXPIRED}, status=status.HTTP_400_BAD_REQUEST)
 
         with transaction.atomic():
             invitation.agreed = agreed

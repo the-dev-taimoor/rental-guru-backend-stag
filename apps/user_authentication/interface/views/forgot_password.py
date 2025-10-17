@@ -1,14 +1,13 @@
-from rest_framework.views import APIView
-from rest_framework.exceptions import ValidationError, NotFound
-from rest_framework import status
-from drf_yasg.utils import swagger_auto_schema
 from django.contrib.auth import get_user_model
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import status
+from rest_framework.exceptions import NotFound, ValidationError
+from rest_framework.views import APIView
 
-from common.constants import Success, Error
-from common.utils import CustomResponse
-
-from apps.user_authentication.interface.serializers import EmailVerifySerializer
 from apps.user_authentication.application.services.otp import otp_email
+from apps.user_authentication.interface.serializers import EmailVerifySerializer
+from common.constants import Error, Success
+from common.utils import CustomResponse
 
 
 class ForgotPasswordView(APIView):
@@ -21,7 +20,7 @@ class ForgotPasswordView(APIView):
         responses={
             200: Success.VERIFICATION_CODE_SENT,
             404: Error.USER_NOT_FOUND,
-        }
+        },
     )
     def post(self, request):
         serializer = EmailVerifySerializer(data=request.data)
@@ -38,7 +37,5 @@ class ForgotPasswordView(APIView):
 
             otp_email(user, action='FORGOT-PASSWORD')
 
-            return CustomResponse({
-                'message': Success.VERIFICATION_CODE_SENT
-            }, status=status.HTTP_200_OK)
+            return CustomResponse({'message': Success.VERIFICATION_CODE_SENT}, status=status.HTTP_200_OK)
         raise ValidationError(serializer.errors)

@@ -1,10 +1,12 @@
-from rest_framework import serializers
-import pandas as pd
 from io import BytesIO
 
-from common.utils import snake_case
-from common.exceptions import CustomValidationError
+import pandas as pd
+from rest_framework import serializers
+
 from apps.user_authentication.infrastructure.models import VendorInvitation
+from common.exceptions import CustomValidationError
+from common.utils import snake_case
+
 
 class BulkVendorInviteSerializer(serializers.Serializer):
     file = serializers.FileField(required=True)
@@ -31,16 +33,10 @@ class BulkVendorInviteSerializer(serializers.Serializer):
             data = []
             for _, row in df.iterrows():
                 role_ = snake_case(row['Role'])
-                vendor_data = {
-                    'first_name': row['First Name'],
-                    'last_name': row['Last Name'],
-                    'email': row['Email'],
-                    'role': role_
-                }
+                vendor_data = {'first_name': row['First Name'], 'last_name': row['Last Name'], 'email': row['Email'], 'role': role_}
                 if role_ not in dict(VendorInvitation.VENDOR_ROLE_CHOICES):
                     raise CustomValidationError(f"Invalid role: {row['Role']}")
                 data.append(vendor_data)
-
 
             return data
 

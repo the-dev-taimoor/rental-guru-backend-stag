@@ -1,5 +1,7 @@
 from django.db import models
+
 from .property import Property
+
 
 class Unit(models.Model):
     status_by_choices = [

@@ -1,12 +1,11 @@
-from rest_framework.views import APIView
+from rest_framework import permissions, status
 from rest_framework.exceptions import ValidationError
-from rest_framework import status, permissions
-
-from common.constants import Success, Error
-from common.utils import CustomResponse
+from rest_framework.views import APIView
 
 from apps.user_authentication.infrastructure.models import Role
 from apps.user_authentication.interface.serializers import SelectRoleSerializer
+from common.constants import Error, Success
+from common.utils import CustomResponse
 
 
 class SelectRoleView(APIView):

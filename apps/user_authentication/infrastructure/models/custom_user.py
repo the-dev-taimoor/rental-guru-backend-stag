@@ -1,7 +1,10 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db import models
+
+from apps.user_authentication.domain.value_objects.enums import AuthMethod, SubscriptionPlan
+
 from .custom_user_manager import CustomUserManager
-from apps.user_authentication.domain.value_objects.enums import SubscriptionPlan, AuthMethod
+
 
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
@@ -12,16 +15,8 @@ class CustomUser(AbstractUser):
     otp_expiry = models.DateTimeField(blank=True, null=True)
 
     business_name = models.CharField(max_length=255, blank=True, null=True)
-    auth_method = models.CharField(
-        max_length=20,
-        choices=AuthMethod.choices,
-        default=AuthMethod.LOCAL
-    )
-    active_subscription = models.CharField(
-        max_length=20,
-        choices=SubscriptionPlan.choices,
-        blank=True, null=True
-    )
+    auth_method = models.CharField(max_length=20, choices=AuthMethod.choices, default=AuthMethod.LOCAL)
+    active_subscription = models.CharField(max_length=20, choices=SubscriptionPlan.choices, blank=True, null=True)
     username = models.CharField(max_length=150, blank=True, null=True, unique=False)
     page_saved = models.IntegerField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)

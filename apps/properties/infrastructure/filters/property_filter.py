@@ -1,6 +1,7 @@
 import django_filters
-from apps.properties.infrastructure.models import Property
 from django.db.models import Count, Q
+
+from apps.properties.infrastructure.models import Property
 
 
 class PropertyFilter(django_filters.FilterSet):
@@ -46,8 +47,5 @@ class PropertyFilter(django_filters.FilterSet):
 
     def filter_q(self, queryset, name, value):
         return queryset.filter(
-            Q(name__icontains=value) |
-            Q(street_address__icontains=value) |
-            Q(city__icontains=value) |
-            Q(state__icontains=value)
+            Q(name__icontains=value) | Q(street_address__icontains=value) | Q(city__icontains=value) | Q(state__icontains=value)
         )

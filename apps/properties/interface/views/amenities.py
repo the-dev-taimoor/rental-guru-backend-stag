@@ -1,15 +1,15 @@
+from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+
+from apps.properties.infrastructure.models import Amenities, Property, PropertyAssignedAmenities, PropertyTypeAndAmenity, Unit
+from apps.properties.interface.serializers import PropertyAmenitiesSerializer, PropertySummaryRetrieveSerializer
+from common.constants import Success
+from common.utils import CustomResponse
+
 from .general import GeneralViewSet
 
-from apps.properties.infrastructure.models import Unit, Property, PropertyTypeAndAmenity, PropertyAssignedAmenities, Amenities
-from apps.properties.interface.serializers import PropertyAmenitiesSerializer, PropertySummaryRetrieveSerializer
-from rest_framework.permissions import IsAuthenticated
-from django_filters.rest_framework import DjangoFilterBackend
-
-
-from common.utils import CustomResponse
-from common.constants import Success
-from rest_framework import status
-from django.shortcuts import get_object_or_404
 
 class AmenitiesView(GeneralViewSet):
     permission_classes = [IsAuthenticated]
@@ -41,11 +41,7 @@ class AmenitiesView(GeneralViewSet):
         for sub_id in sub_amenities_ids:
             sub_obj = get_object_or_404(Amenities, id=sub_id)
 
-            pa = PropertyAssignedAmenities(
-                property=property_obj,
-                sub_amenity=sub_obj,
-                unit=unit_obj
-            )
+            pa = PropertyAssignedAmenities(property=property_obj, sub_amenity=sub_obj, unit=unit_obj)
             bulk_list.append(pa)
 
         PropertyAssignedAmenities.objects.bulk_create(bulk_list)
@@ -63,13 +59,7 @@ class AmenitiesView(GeneralViewSet):
 
         amenities_data = PropertySummaryRetrieveSerializer.get_amenities(property_id=property_obj.id, unit_id=unit_id)
 
-        return CustomResponse(
-            {
-                'data': amenities_data,
-                'message': Success.AMENITIES_UPDATED
-            },
-            status=status.HTTP_200_OK
-        )
+        return CustomResponse({'data': amenities_data, 'message': Success.AMENITIES_UPDATED}, status=status.HTTP_200_OK)
 
     def list(self, request, *args, **kwargs):
         filtered_queryset = self.filter_queryset(self.get_queryset())
@@ -80,15 +70,8 @@ class AmenitiesView(GeneralViewSet):
             if item.amenity not in amenities_dict:
                 amenities_dict[item.amenity] = []
 
-            amenities_dict[item.amenity].append({
-                'id': item.id,
-                'sub_amenity': item.sub_amenity
-            })
+            amenities_dict[item.amenity].append({'id': item.id, 'sub_amenity': item.sub_amenity})
 
-        result = [
-            {'amenity': key, 'sub_amenities': value}
-            for key, value in amenities_dict.items()
-        ]
+        result = [{'amenity': key, 'sub_amenities': value} for key, value in amenities_dict.items()]
 
-        return CustomResponse({'data': result, 'message': Success.AMENITIES_AND_SUB_AMENITIES},
-                        status=status.HTTP_200_OK)
+        return CustomResponse({'data': result, 'message': Success.AMENITIES_AND_SUB_AMENITIES}, status=status.HTTP_200_OK)

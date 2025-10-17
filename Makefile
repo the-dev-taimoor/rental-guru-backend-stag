@@ -23,7 +23,7 @@ export DJANGO_SETTINGS_MODULE=$(DJANGO_SETTINGS)
 help:
 	@echo "Django Management Commands"
 	@echo "---------------------------"
-	@echo "make run            - Run the Django development server"
+	@echo "make dev-local      - Run the Django development server"
 	@echo "make migrate        - Apply migrations"
 	@echo "make makemigrations - Create new migrations"
 	@echo "make superuser      - Create a superuser"
@@ -39,7 +39,7 @@ help:
 # Core Django commands
 # ---------------------------
 
-run:
+dev-local::
 	$(MANAGE) runserver 127.0.0.1:8000
 
 migrate:
@@ -70,13 +70,6 @@ collectstatic:
 env:
 	@echo "Using Django settings: $(DJANGO_SETTINGS_MODULE)"
 
-lint:
-	flake8 apps/ config/
-
-clean:
-	find . -type d -name "__pycache__" -exec rm -rf {} +
-	rm -rf build/ dist/ *.egg-info
-
 # ---------------------------
 # Database utilities
 # ---------------------------
@@ -87,3 +80,34 @@ showmigrations:
 sqlmigrate:
 	$(MANAGE) sqlmigrate $(app) $(migration)
 
+
+# Target to clean the Python program cache files and directories
+.PHONY: clean
+clean:
+	find . -type f -name "*.pyc" -delete
+	find . -type d -name "__pycache__" -exec rm -rf {} +
+
+# Target to create new requirements file if any dependency is installed or updated
+.PHONY: add-deps
+add-deps:
+	pip freeze > requirements.txt
+
+# Target to install requirements from a requirements.txt file
+.PHONY: install-deps
+install-deps:
+	pip install -r requirements.txt
+
+# Target to format code using black
+.PHONY: format
+format:
+	black . --preview
+
+# Target to check code using ruff
+.PHONY: lint
+lint:
+	ruff check .
+
+# Target to check and fix code using ruff
+.PHONY: lint-fix
+lint-fix:
+	ruff check --fix .

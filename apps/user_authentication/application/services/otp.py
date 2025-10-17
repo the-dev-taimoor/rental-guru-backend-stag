@@ -1,14 +1,13 @@
-import random
 import logging
+import random
+from datetime import timedelta
 
 from django.conf import settings
 from django.core.mail import send_mail
 from django.utils import timezone
 from rest_framework.exceptions import APIException
-from datetime import timedelta
 
-from common.constants import email_templates, Error
-
+from common.constants import Error, email_templates
 
 logger = logging.getLogger('django')
 

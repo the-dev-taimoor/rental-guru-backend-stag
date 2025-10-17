@@ -1,10 +1,12 @@
-from .general import GeneralViewSet
+from rest_framework.permissions import IsAuthenticated
 
 from apps.properties.infrastructure.models import Property
 from apps.properties.interface.serializers import PropertySerializer
-from rest_framework.permissions import IsAuthenticated
-from common.utils import CustomResponse
 from common.constants import Success
+from common.utils import CustomResponse
+
+from .general import GeneralViewSet
+
 
 # this has dummy response
 class PropertyMetricsViewSet(GeneralViewSet):

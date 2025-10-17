@@ -1,9 +1,11 @@
-from .general import GeneralViewSet
+from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.permissions import IsAuthenticated
 
 from apps.properties.infrastructure.models import PropertyDocument
 from apps.properties.interface.serializers import PropertyDocumentSerializer
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.parsers import MultiPartParser, FormParser
+
+from .general import GeneralViewSet
+
 
 class PropertyDocumentViewSet(GeneralViewSet):
     permission_classes = [IsAuthenticated]

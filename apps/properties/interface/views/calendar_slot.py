@@ -1,11 +1,11 @@
-from .general import GeneralViewSet
+from datetime import datetime, timedelta
 
 from apps.properties.infrastructure.models import CalendarSlot
-from apps.properties.interface.serializers import CalendarSlotSerializer, CalendarSlotListSerializer
-
+from apps.properties.interface.serializers import CalendarSlotListSerializer, CalendarSlotSerializer
+from common.constants import Error, Success
 from common.utils import CustomResponse
-from common.constants import Success, Error
-from datetime import datetime, timedelta
+
+from .general import GeneralViewSet
 
 
 class CalendarSlotViewSet(GeneralViewSet):
@@ -50,12 +50,14 @@ class CalendarSlotViewSet(GeneralViewSet):
             existing_slot = slots.filter(date=current_date).first()
             if existing_slot:
                 status = existing_slot.status
-            all_dates.append({
-                'id': existing_slot.id if existing_slot else None,
-                'date': current_date.strftime('%Y-%m-%d'),
-                'status': status,
-                'reason': existing_slot.reason if existing_slot else None
-            })
+            all_dates.append(
+                {
+                    'id': existing_slot.id if existing_slot else None,
+                    'date': current_date.strftime('%Y-%m-%d'),
+                    'status': status,
+                    'reason': existing_slot.reason if existing_slot else None,
+                }
+            )
             current_date += timedelta(days=1)
 
         return CustomResponse({"data": all_dates})

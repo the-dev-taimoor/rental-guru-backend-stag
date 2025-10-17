@@ -1,11 +1,12 @@
-from rest_framework.views import APIView
-from apps.properties.infrastructure.models import Property, PropertyDocument
-from rest_framework.permissions import IsAuthenticated
-from common.utils import CustomResponse
-from common.constants import Error
 from rest_framework import status
-from rest_framework.exceptions import NotFound
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import NotFound, ValidationError
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+
+from apps.properties.infrastructure.models import Property, PropertyDocument
+from common.constants import Error
+from common.utils import CustomResponse
+
 
 class PropertyDocumentTypesView(APIView):
     permission_classes = [IsAuthenticated]
@@ -29,11 +30,7 @@ class PropertyDocumentTypesView(APIView):
 
         all_types = [choice[0] for choice in document_types]
 
-        existing = set(
-            PropertyDocument.objects
-                .filter(property_id=property_id, unit_id=unit_id)
-                .values_list('document_type', flat=True)
-        )
+        existing = set(PropertyDocument.objects.filter(property_id=property_id, unit_id=unit_id).values_list('document_type', flat=True))
 
         missing = [t for t in all_types if t not in existing and t != 'other']
         missing.append('other')

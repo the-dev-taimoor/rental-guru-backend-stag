@@ -1,22 +1,27 @@
 import logging
 
-from rest_framework.views import APIView
-from rest_framework.parsers import JSONParser
-from rest_framework.exceptions import ValidationError, NotAuthenticated
-from rest_framework import status
-from rest_framework_simplejwt.tokens import RefreshToken
-from drf_yasg.utils import swagger_auto_schema
-from django.views.decorators.csrf import csrf_exempt
 from django.db import transaction
 from django.utils import timezone
-
-from common.constants import Success, Error
-from common.utils import CustomResponse
+from django.views.decorators.csrf import csrf_exempt
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import status
+from rest_framework.exceptions import NotAuthenticated, ValidationError
+from rest_framework.parsers import JSONParser
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.properties.infrastructure.models import OwnerInfo
-from apps.user_authentication.infrastructure.models import PropertyOwner, Vendor, Tenant, VendorInvitation, TenantInvitation, KYCRequest
-from apps.user_authentication.interface.serializers import InvitationDetailsSerializer, UserSerializer, PropertyOwnerProfileSerializer, VendorProfileSerializer, TenantProfileSerializer
 from apps.user_authentication.application.services.otp import otp_email
+from apps.user_authentication.infrastructure.models import KYCRequest, PropertyOwner, Tenant, TenantInvitation, Vendor, VendorInvitation
+from apps.user_authentication.interface.serializers import (
+    InvitationDetailsSerializer,
+    PropertyOwnerProfileSerializer,
+    TenantProfileSerializer,
+    UserSerializer,
+    VendorProfileSerializer,
+)
+from common.constants import Error, Success
+from common.utils import CustomResponse
 
 logger = logging.getLogger('django')
 
@@ -60,14 +65,16 @@ class SignupView(APIView):
             data_ = InvitationDetailsSerializer(vendor_invitations).data
             data_['role'] = 'vendor'
             invitations.append(data_)
-        except:
+        except Exception as e:
+            logger.error(f"Exception occured while inviting vendor: {str(e)}")
             pass
         try:
             tenant_invitations = TenantInvitation.objects.get(email=user.email, accepted=True)
             data_ = InvitationDetailsSerializer(tenant_invitations).data
             data_['role'] = 'tenant'
             invitations.append(data_)
-        except:
+        except Exception as e:
+            logger.error(f"Exception occured while inviting tenant: {str(e)}")
             pass
 
         try:
@@ -77,16 +84,15 @@ class SignupView(APIView):
 
         response_data = {
             'data': {
-            'user': UserSerializer(user).data,
-            'kyc_request': kyc_request if kyc_request else None,
-            'roles': list(roles),
-            'property_owner_profile': PropertyOwnerProfileSerializer(
-                property_owner_profile).data if property_owner_profile else None,
-            'vendor_profile': VendorProfileSerializer(vendor_profile).data if vendor_profile else None,
-            'tenant_profile': TenantProfileSerializer(tenant_profile).data if tenant_profile else None,
-            'invitations': invitations
+                'user': UserSerializer(user).data,
+                'kyc_request': kyc_request if kyc_request else None,
+                'roles': list(roles),
+                'property_owner_profile': PropertyOwnerProfileSerializer(property_owner_profile).data if property_owner_profile else None,
+                'vendor_profile': VendorProfileSerializer(vendor_profile).data if vendor_profile else None,
+                'tenant_profile': TenantProfileSerializer(tenant_profile).data if tenant_profile else None,
+                'invitations': invitations,
             },
-            'message': 'User details.'
+            'message': 'User details.',
         }
         return CustomResponse(response_data, status=status.HTTP_200_OK)
 
@@ -133,12 +139,7 @@ class SignupView(APIView):
             user_data['refresh_token'] = refresh_token
             user_data['access_token'] = access_token
 
-            response_data = {
-                "data": user_data,
-                "error": None,
-                "success": True,
-                "message": Success.USER_CREATED
-            }
+            response_data = {"data": user_data, "error": None, "success": True, "message": Success.USER_CREATED}
             return CustomResponse(response_data, status=status.HTTP_201_CREATED)
         raise ValidationError(serializer.errors)
 

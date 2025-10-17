@@ -1,10 +1,15 @@
-from .general import GeneralViewSet
+from rest_framework.permissions import IsAuthenticated
 
 from apps.properties.infrastructure.models import Property, Unit
-from apps.properties.interface.serializers import PropertySerializer
-from rest_framework.permissions import IsAuthenticated
+from apps.properties.interface.serializers import (
+    PropertyRetrieveSerializer,
+    PropertySerializer,
+    PropertySummaryRetrieveSerializer,
+    UnitRetrieveSerializer,
+)
 from common.utils import CustomResponse
-from apps.properties.interface.serializers import PropertyRetrieveSerializer, PropertySummaryRetrieveSerializer, UnitRetrieveSerializer
+
+from .general import GeneralViewSet
 
 
 class PropertyRetrieveViewSet(GeneralViewSet):
@@ -28,7 +33,7 @@ class PropertyRetrieveViewSet(GeneralViewSet):
             'rental_details': PropertySummaryRetrieveSerializer.get_rental_details(property_id, unit_id),
             'amenities': PropertySummaryRetrieveSerializer.get_amenities(property_id, unit_id=unit_id),
             'cost_fees': PropertySummaryRetrieveSerializer.get_cost_fees(property_id, unit_id),
-            'documents': PropertySummaryRetrieveSerializer.get_documents(property_id, unit_id)
+            'documents': PropertySummaryRetrieveSerializer.get_documents(property_id, unit_id),
         }
         if not unit_id:
             property_data = {
@@ -39,9 +44,7 @@ class PropertyRetrieveViewSet(GeneralViewSet):
             unit_data.update(property_data)
         else:
             unit_details_serializer = UnitRetrieveSerializer(unit_instance)
-            property_data = {
-                'detail': unit_details_serializer.data
-            }
+            property_data = {'detail': unit_details_serializer.data}
             unit_data.update(property_data)
 
         return unit_data

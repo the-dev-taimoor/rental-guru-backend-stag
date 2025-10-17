@@ -1,5 +1,7 @@
 from rest_framework.pagination import PageNumberPagination
+
 from common.utils import CustomResponse
+
 
 class BasePagination(PageNumberPagination):
     page_size = 10

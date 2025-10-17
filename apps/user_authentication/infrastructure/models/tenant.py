@@ -1,7 +1,8 @@
-from django.db import models
 from django.conf import settings
+from django.db import models
 
 User = settings.AUTH_USER_MODEL
+
 
 class Tenant(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tenant_user')
@@ -12,7 +13,7 @@ class Tenant(models.Model):
         ('self-employed', 'Self-Employed'),
         ('unemployed', 'Unemployed'),
         ('student', 'Student'),
-        ('retired', 'Retired')
+        ('retired', 'Retired'),
     ]
     employment_status = models.CharField(max_length=20, blank=True, null=True, choices=EMPLOYMENT_STATUS_CHOICES)
     INDUSTRY_CHOICES = [

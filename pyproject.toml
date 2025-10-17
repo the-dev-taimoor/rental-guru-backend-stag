@@ -1,0 +1,33 @@
+[tool.ruff]
+line-length = 140
+exclude = [
+    "migrations",
+    ".venv",
+    "__pycache__",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "Q", "I"]              # Includes flake8-quotes rules
+ignore = ["Q000", "Q001", "Q002", "E501"]  # Ignore quote-related and line-length warnings
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F403", "F401"]             # Ignore unused imports in init files
+
+[tool.ruff.format]
+quote-style = "preserve"             # Preserve whatever quotes you write
+
+[tool.black]
+line-length = 140
+skip-string-normalization = true
+exclude = '''
+(
+  /migrations/       # exclude Django/Flask migrations
+  | \.venv/          # exclude virtual environment
+  | /venv/           # exclude virtual environment
+  | __pycache__/     # exclude Python cache
+)
+'''
+
+[tool.ruff.lint.isort]
+known-first-party = ["apps", "common", "config"]
+combine-as-imports = true

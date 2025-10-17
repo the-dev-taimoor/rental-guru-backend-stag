@@ -2,6 +2,7 @@
 
 from django.db import models
 
+
 class SubscriptionPlan(models.TextChoices):
     BASIC = 'basic', 'Basic'
     ENTERPRISE = 'enterprise', 'Enterprise'

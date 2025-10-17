@@ -1,10 +1,13 @@
 from rest_framework import serializers
+
 from common.constants import Error
+
 
 class InvitationAcceptanceSerializer(serializers.Serializer):
     """
     Serializer for accepting or rejecting invitations.
     """
+
     invitation_id = serializers.IntegerField(required=True)
     accept = serializers.BooleanField(required=True)
     vendor = serializers.BooleanField(required=False, default=False)

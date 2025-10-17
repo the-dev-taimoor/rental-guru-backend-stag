@@ -1,6 +1,8 @@
 from rest_framework import serializers
+
 from apps.user_authentication.infrastructure.models import LicenseAndCertificates
 from common.utils import get_presigned_url, unsnake_case
+
 
 class LicenseAndCertificatesSerializer(serializers.ModelSerializer):
     title = serializers.SerializerMethodField()

@@ -1,5 +1,7 @@
 from django.db import models
+
 from .tenant_invitation import TenantInvitation
+
 
 class Agreements(models.Model):
     invitation = models.ForeignKey(TenantInvitation, on_delete=models.CASCADE, related_name='agreements')

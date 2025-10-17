@@ -1,5 +1,6 @@
 from rest_framework import permissions
 
+
 class IsPropertyOwner(permissions.BasePermission):
     message = "You do not have permission to perform this action on this property."
 

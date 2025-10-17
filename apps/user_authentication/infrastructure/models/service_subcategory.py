@@ -1,5 +1,7 @@
 from django.db import models
+
 from .service_category import ServiceCategory
+
 
 class ServiceSubCategory(models.Model):
     category_id = models.ForeignKey(ServiceCategory, on_delete=models.CASCADE, related_name='category')

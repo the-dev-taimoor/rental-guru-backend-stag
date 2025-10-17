@@ -1,7 +1,9 @@
 from rest_framework import serializers
 
-from apps.properties.infrastructure.models import PropertyPhoto, ListingInfo
+from apps.properties.infrastructure.models import ListingInfo, PropertyPhoto
+
 from .property_photo import PropertyPhotoSerializer
+
 
 class ListingInfoRetrieveSerializer(serializers.ModelSerializer):
     photo = PropertyPhotoSerializer(many=True, required=False, read_only=True)

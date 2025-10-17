@@ -1,5 +1,7 @@
 from django.db import models
+
 from .property import Property
+
 
 class ListingInfo(models.Model):
     property_listed_by_choices = [
@@ -21,11 +23,16 @@ class ListingInfo(models.Model):
     square_footage = models.PositiveIntegerField(blank=True, null=True, help_text='Size in sq.ft.')
     number_of_units = models.PositiveIntegerField(blank=True, null=True)
     # for university_housing only
-    occupancy_type = models.CharField(max_length=50, blank=True, null=True, choices=[
-        ('single', "Single"),
-        ('shared', "Shared"),
-        ('mixed', "Mixed"),
-    ])
+    occupancy_type = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True,
+        choices=[
+            ('single', "Single"),
+            ('shared', "Shared"),
+            ('mixed', "Mixed"),
+        ],
+    )
 
     description = models.TextField()
 
@@ -35,8 +42,9 @@ class ListingInfo(models.Model):
     pet_types = models.JSONField(blank=True, null=True, help_text="List of allowed pet types")
     other_pets = models.JSONField(blank=True, null=True, help_text="List of allowed pet types")
 
-    availability_duration = models.IntegerField(default=30, choices=availability_duration_by_choices,
-                                                help_text="Availability time duration.")
+    availability_duration = models.IntegerField(
+        default=30, choices=availability_duration_by_choices, help_text="Availability time duration."
+    )
     showing_availability = models.JSONField(help_text="Availability to show the property")
 
     created_at = models.DateTimeField(auto_now_add=True)

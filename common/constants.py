@@ -1,7 +1,8 @@
 email_templates = {
     'SIGNUP': {
         'subject': 'Rental Guru – Verify Your Email Address',
-        'html_message': """
+        'html_message': (
+            """
                         <html>
                         <body>
                             <p>Hi {USER_FIRST_NAME},</p>
@@ -15,12 +16,14 @@ email_templates = {
                             <p>Rental Guru Team</p>
                         </body>
                         </html>
-                        """,
-        'duration': 1
+                        """
+        ),
+        'duration': 1,
     },
     'FORGOT-PASSWORD': {
         'subject': 'Rental Guru – Password Reset Request',
-        'html_message': """
+        'html_message': (
+            """
                         <html>
                         <body>
                             <p>Hi {USER_FIRST_NAME},</p>
@@ -35,12 +38,14 @@ email_templates = {
                             <p>Rental Guru Team</p>
                         </body>
                         </html>
-                        """,
-        'duration': 1
+                        """
+        ),
+        'duration': 1,
     },
     'SEND-OTP': {
         'subject': 'Rental Guru – Verify your account',
-        'html_message': """
+        'html_message': (
+            """
                         <html>
                         <body>
                             <p>Hi {USER_FIRST_NAME},</p>
@@ -55,12 +60,14 @@ email_templates = {
                             <p>Rental Guru Team</p>
                         </body>
                         </html>
-                        """,
-        'duration': 1
+                        """
+        ),
+        'duration': 1,
     },
     'INVITE-OWNER': {
         'subject': 'Action Required: Complete Your Property Co-Ownership Details',
-        'html_message': """
+        'html_message': (
+            """
                         <html>
                           <body>
                             <p>Hi there,</p>
@@ -84,10 +91,12 @@ email_templates = {
                           </body>
                         </html>
                         """
+        ),
     },
     'INVITE-EXISTING-OWNER': {
         'subject': 'Action Required: Complete Your Property Co-Ownership Details',
-        'html_message': """
+        'html_message': (
+            """
                         <html>
                           <body>
                             <p>Hi there,</p>
@@ -106,10 +115,12 @@ email_templates = {
                           </body>
                         </html>
                         """
+        ),
     },
     'INVITE-VENDOR': {
         'subject': 'Invitation to Join Rental Guru as a Trusted Vendor',
-        'html_message': """
+        'html_message': (
+            """
                         <html>
                           <body>
                             <p>Hi {VENDOR_FIRST_NAME} {VENDOR_LAST_NAME},</p>
@@ -125,10 +136,12 @@ email_templates = {
                           </body>
                         </html>
                         """
+        ),
     },
     'INVITE-TENANT': {
         'subject': 'Invitation to Join Rental Guru as a Tenant',
-        'html_message': """
+        'html_message': (
+            """
                         <html>
                           <body>
                             <p>Hi {TENANT_FIRST_NAME},</p>
@@ -144,8 +157,8 @@ email_templates = {
                           </body>
                         </html>
                         """
+        ),
     },
-
 }
 
 
@@ -173,7 +186,7 @@ class Success:
     INVITATION_SENT = "Invitation is sent successfully."
     UNAVAILABILITY_SET = "Unavailable dates added successfully."
     OWNERS_ADDED = "Owners added successfully."
-    OWNERS_UPDATED= "Owners detail updated successfully."
+    OWNERS_UPDATED = "Owners detail updated successfully."
     COST_FEE_ADDED = "Cost Fees added successfully."
     COST_FEE_UPDATED = "Cost Fees updated successfully."
     KYC_LIST = "KYC requests list."
@@ -275,7 +288,9 @@ class Error:
     RENTAL_TYPE_UNIVERSITY_HOUSING = "Rental type should be monthly billing or semester billing for university housing."
     OTHERS_RENTAL_TYPE = "Rental type should be short term or long term for this property type."
     SEMESTER_REQUIRED = "Semester is required for semester billing."
-    INVALID_PAYMENT_FREQUENCY_UNIVERSITY_HOUSING = "Payment frequency should be one time, monthly, quarterly or yearly for university housing."
+    INVALID_PAYMENT_FREQUENCY_UNIVERSITY_HOUSING = (
+        "Payment frequency should be one time, monthly, quarterly or yearly for university housing."
+    )
     INVALID_PAYMENT_FREQUENCY_OTHERS = "Payment frequency should be one time, monthly or per use for this property type."
     DOCUMENT_TYPE_UNIVERSITY_HOUSING = "Please select correct document type for university housing."
     DOCUMENT_TYPE_OTHERS = "Please select correct document type for {}."

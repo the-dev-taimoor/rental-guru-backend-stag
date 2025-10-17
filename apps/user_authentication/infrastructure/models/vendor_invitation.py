@@ -1,9 +1,10 @@
-from django.db import models
 from django.conf import settings
+from django.db import models
+
 from apps.user_authentication.domain.services.dates import get_default_expiry_date
 
-
 User = settings.AUTH_USER_MODEL
+
 
 class VendorInvitation(models.Model):
     VENDOR_ROLE_CHOICES = [

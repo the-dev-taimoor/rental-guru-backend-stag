@@ -1,19 +1,20 @@
 from rest_framework import serializers
 from rest_framework.exceptions import NotFound
 
+from apps.properties.infrastructure.models import Property, PropertyPhoto, RentDetails, Unit
 from common.constants import Error
 from common.utils import snake_case
-from apps.properties.infrastructure.models import RentDetails, Unit, Property, PropertyPhoto
 
 from .property_photo import PropertyPhotoSerializer
+
 
 class UnitSerializer(serializers.ModelSerializer):
     # Nested photos should be read-only to avoid instantiation errors in
     # Swagger / DRF when describing input objects.
     photo = PropertyPhotoSerializer(many=True, required=False, read_only=True)
-    rent = serializers.SerializerMethodField() # for list of units API
-    photos = serializers.SerializerMethodField() # for list of units API
-    tenants = serializers.SerializerMethodField() # for list of units API
+    rent = serializers.SerializerMethodField()  # for list of units API
+    photos = serializers.SerializerMethodField()  # for list of units API
+    tenants = serializers.SerializerMethodField()  # for list of units API
     unit_type_by_choices = {
         'multi_family': [
             ('unit_a', "Unit A"),

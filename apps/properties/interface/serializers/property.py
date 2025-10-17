@@ -1,10 +1,13 @@
 import re
-from rest_framework import serializers
-from django.db.models import Avg
 
+from django.db.models import Avg
+from rest_framework import serializers
+
+from apps.properties.infrastructure.models import ListingInfo, Property, PropertyPhoto, RentDetails
 from common.constants import Error
-from apps.properties.infrastructure.models import ListingInfo, RentDetails, PropertyPhoto, Property
+
 from .property_photo import PropertyPhotoSerializer
+
 
 class PropertySerializer(serializers.ModelSerializer):
     property_owner = serializers.PrimaryKeyRelatedField(required=False, read_only=True)

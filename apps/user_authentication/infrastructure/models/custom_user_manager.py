@@ -1,5 +1,5 @@
+from django.contrib.auth.models import UserManager
 
-from django.contrib.auth.models import  UserManager
 
 #  this is not being used anywhere
 class CustomUserManager(UserManager):

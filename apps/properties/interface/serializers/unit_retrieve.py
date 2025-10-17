@@ -1,7 +1,9 @@
 from rest_framework import serializers
 
 from apps.properties.infrastructure.models import PropertyPhoto, Unit
+
 from .property_photo import PropertyPhotoSerializer
+
 
 class UnitRetrieveSerializer(serializers.ModelSerializer):
     # Read-only nested serializer for unit photos

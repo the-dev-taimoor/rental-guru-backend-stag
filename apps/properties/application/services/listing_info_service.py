@@ -1,9 +1,10 @@
 from apps.properties.infrastructure.models import ListingInfo, PropertyPhoto
 
+
 # trash this file if unused
 class ListingInfoService:
     # This method was decoupled from listing info serializer and was unused there as well - check if safe to remove
-    @staticmethod 
+    @staticmethod
     def create_listing_info(validated_data, photos, page_saved):
         listing_info = ListingInfo.objects.create(**validated_data)
 

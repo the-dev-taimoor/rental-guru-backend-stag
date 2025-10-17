@@ -1,21 +1,31 @@
 from django.contrib.auth import get_user_model
 
+from apps.properties.infrastructure.models import (
+    CostFee,
+    CostFeesCategory,
+    ListingInfo,
+    OwnerInfo,
+    Property,
+    PropertyAssignedAmenities,
+    PropertyDocument,
+    RentDetails,
+    Unit,
+)
+from apps.user_authentication.infrastructure.models import PropertyOwner  # why is a model from other app being used here
 from common.utils import get_presigned_url
-from apps.properties.infrastructure.models import ListingInfo, RentDetails, PropertyAssignedAmenities, Property, CostFeesCategory, OwnerInfo, CostFee, Unit, PropertyDocument
-from apps.user_authentication.infrastructure.models import PropertyOwner # why is a model from other app being used here 
 
-from .rent_details_retrieve import RentDetailsRetrieveSerializer
-from .listing_info_retrieve import ListingInfoRetrieveSerializer
 from .cost_fee_retrieve import CostFeeRetrieveSerializer
-from .owner_info_retrieve import OwnerInfoRetrieveSerializer
 from .document_retrieve import DocumentRetrieveSerializer
+from .listing_info_retrieve import ListingInfoRetrieveSerializer
+from .owner_info_retrieve import OwnerInfoRetrieveSerializer
+from .rent_details_retrieve import RentDetailsRetrieveSerializer
+
 
 #  this doesnt look a a proper serializer, look into it
 class PropertySummaryRetrieveSerializer:
     @staticmethod
     def get_amenities(property_id, unit_id):
-        sub_amenities = PropertyAssignedAmenities.objects.filter(property=property_id, unit=unit_id).select_related(
-            'sub_amenity')
+        sub_amenities = PropertyAssignedAmenities.objects.filter(property=property_id, unit=unit_id).select_related('sub_amenity')
         model = Property
         if unit_id:
             model = Unit
@@ -28,10 +38,7 @@ class PropertySummaryRetrieveSerializer:
             a_name = amenity.sub_amenity.amenity
             if a_name not in amenities_data:
                 amenities_data[a_name] = list()
-            amenities_data[a_name].append({
-                'id': amenity.sub_amenity.id,
-                'name': amenity.sub_amenity.sub_amenity
-            })
+            amenities_data[a_name].append({'id': amenity.sub_amenity.id, 'name': amenity.sub_amenity.sub_amenity})
         amenities_data['other_amenities'] = list(other_amenities)
         return amenities_data
 
@@ -52,7 +59,7 @@ class PropertySummaryRetrieveSerializer:
         for cost_fee in cost_category_instances:
             cost_fee_obj = {
                 'category_name': cost_fee.category_name,
-                'fees': [CostFeeRetrieveSerializer(f).data for f in CostFee.objects.filter(category=cost_fee.id)]
+                'fees': [CostFeeRetrieveSerializer(f).data for f in CostFee.objects.filter(category=cost_fee.id)],
             }
             cost_fee_data.append(cost_fee_obj)
         return cost_fee_data

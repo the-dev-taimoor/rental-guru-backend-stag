@@ -6,7 +6,6 @@ if ENVIRONMENT == 'production':
 else:
     from .local import LocalSettings as CurrentSettings
 
-print("settings are", CurrentSettings)
 # Apply settings from the chosen class to the global scope
 for setting_name in dir(CurrentSettings):
     print("setting_name:", setting_name)

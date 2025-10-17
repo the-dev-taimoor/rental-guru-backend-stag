@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from apps.properties.infrastructure.models import CostFee
 
+
 class CostFeeRetrieveSerializer(serializers.ModelSerializer):
     class Meta:
         model = CostFee

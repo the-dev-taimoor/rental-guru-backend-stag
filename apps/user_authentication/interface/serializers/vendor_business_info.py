@@ -1,6 +1,8 @@
 from rest_framework import serializers
-from common.utils import get_presigned_url 
+
 from apps.user_authentication.infrastructure.models import Vendor
+from common.utils import get_presigned_url
+
 
 class VendorBusinessInfoSerializer(serializers.ModelSerializer):
     """Serializer for vendor business information tab"""
@@ -8,8 +10,12 @@ class VendorBusinessInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vendor
         fields = [
-            'business_name', 'business_website', 'business_address',
-            'business_type', 'company_registration_number', 'registration_type'
+            'business_name',
+            'business_website',
+            'business_address',
+            'business_type',
+            'company_registration_number',
+            'registration_type',
         ]
 
     def to_representation(self, instance):

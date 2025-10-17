@@ -1,6 +1,6 @@
 from django.utils.encoding import force_str
-from rest_framework.utils.serializer_helpers import ReturnDict, ReturnList
 from rest_framework.exceptions import ValidationError
+from rest_framework.utils.serializer_helpers import ReturnDict, ReturnList
 
 
 class CustomValidationError(ValidationError):
@@ -38,17 +38,12 @@ def custom_get_error_details(data, default_code=None):
     lazy translation strings or strings into `ErrorDetail`.
     """
     if isinstance(data, (list, tuple)):
-        ret = [
-            custom_get_error_details(item, default_code) for item in data
-        ]
+        ret = [custom_get_error_details(item, default_code) for item in data]
         if isinstance(data, ReturnList):
             return ReturnList(ret, serializer=data.serializer)
         return ret
     elif isinstance(data, dict):
-        ret = {
-            key: custom_get_error_details(value, default_code)
-            for key, value in data.items()
-        }
+        ret = {key: custom_get_error_details(value, default_code) for key, value in data.items()}
         if isinstance(data, ReturnDict):
             return ReturnDict(ret, serializer=data.serializer)
         return ret

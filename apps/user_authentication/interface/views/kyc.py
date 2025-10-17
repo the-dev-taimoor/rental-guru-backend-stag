@@ -1,36 +1,35 @@
-from rest_framework.views import APIView
-from rest_framework import status, permissions
-from rest_framework.exceptions import NotFound
-
-from drf_yasg.utils import swagger_auto_schema
-from django.db.models import Q, Count
 from django.conf import settings
 from django.core.mail import send_mail
+from django.db.models import Count, Q
 from django.utils import timezone
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import permissions, status
+from rest_framework.exceptions import NotFound
+from rest_framework.views import APIView
 
-from common.constants import Success, Error
-from common.utils import CustomResponse, get_presigned_url
-
+from apps.user_authentication.application.pagination import KYCRequestsPagination
 from apps.user_authentication.infrastructure.models import KYCRequest, Role
 from apps.user_authentication.interface.serializers import KYCVerifySerializer
-from apps.user_authentication.application.pagination import KYCRequestsPagination
+from common.constants import Error, Success
+from common.utils import CustomResponse, get_presigned_url
 
 
 class KYCView(APIView):
     """
     API view to view kyc requests by Super Admin only.
     """
+
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = KYCVerifySerializer
     pagination_class = KYCRequestsPagination
 
     @swagger_auto_schema(
         operation_description="Get all KYC requests with search and filter functionality. "
-                              "Use search to filter with name and status to filter on the basis of status column in query params.",
+        "Use search to filter with name and status to filter on the basis of status column in query params.",
         responses={
             200: "List of KYC requests with pagination, search, and filter options.",
             403: "Permission denied. Only super admins can access this endpoint.",
-        }
+        },
     )
     def get(self, request, *args, **kwargs):
         basename = request.resolver_match.url_name
@@ -42,8 +41,10 @@ class KYCView(APIView):
 
     def get_list(self, request, *args, **kwargs):
         if not request.user.is_superuser:
-            return CustomResponse({'error': Error.ONLY_SUPER_ADMINS_CAN_VIEW_KYC, 'success': False,
-                                   'message': Error.ONLY_SUPER_ADMINS_CAN_VIEW_KYC}, status=status.HTTP_403_FORBIDDEN)
+            return CustomResponse(
+                {'error': Error.ONLY_SUPER_ADMINS_CAN_VIEW_KYC, 'success': False, 'message': Error.ONLY_SUPER_ADMINS_CAN_VIEW_KYC},
+                status=status.HTTP_403_FORBIDDEN,
+            )
 
         search_query = request.query_params.get('search', None)
         status_filter = request.query_params.get('status', None)
@@ -52,9 +53,9 @@ class KYCView(APIView):
 
         if search_query:
             kyc_requests = kyc_requests.filter(
-                Q(user_id__first_name__icontains=search_query) |
-                Q(user_id__last_name__icontains=search_query) |
-                Q(user_id__email__icontains=search_query)
+                Q(user_id__first_name__icontains=search_query)
+                | Q(user_id__last_name__icontains=search_query)
+                | Q(user_id__email__icontains=search_query)
             )
 
         if status_filter:
@@ -89,8 +90,10 @@ class KYCView(APIView):
 
     def get_stats(self, request, *args, **kwargs):
         if not request.user.is_superuser:
-            return CustomResponse({'error': Error.ONLY_SUPER_ADMINS_CAN_VIEW_KYC, 'success': False,
-                                   'message': Error.ONLY_SUPER_ADMINS_CAN_VIEW_KYC}, status=status.HTTP_403_FORBIDDEN)
+            return CustomResponse(
+                {'error': Error.ONLY_SUPER_ADMINS_CAN_VIEW_KYC, 'success': False, 'message': Error.ONLY_SUPER_ADMINS_CAN_VIEW_KYC},
+                status=status.HTTP_403_FORBIDDEN,
+            )
         counts = KYCRequest.objects.aggregate(
             total_requests=Count('id'),
             total_pending=Count('id', filter=Q(status='pending')),
@@ -123,17 +126,16 @@ class KYCView(APIView):
                 html_message=html_message,
             )
         except Exception as e:
-            return CustomResponse({
-                'error': e,
-                'success': False,
-                'message': Error.KYC_RESPONSE_EMAIL_ERROR
-            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return CustomResponse(
+                {'error': e, 'success': False, 'message': Error.KYC_RESPONSE_EMAIL_ERROR}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     def patch(self, request):
         if not request.user.is_superuser:
-            return CustomResponse({'error': Error.ONLY_SUPER_ADMINS_CAN_VIEW_KYC, 'success': False,
-                                   'message': Error.ONLY_SUPER_ADMINS_CAN_VIEW_KYC},
-                                  status=status.HTTP_403_FORBIDDEN)
+            return CustomResponse(
+                {'error': Error.ONLY_SUPER_ADMINS_CAN_VIEW_KYC, 'success': False, 'message': Error.ONLY_SUPER_ADMINS_CAN_VIEW_KYC},
+                status=status.HTTP_403_FORBIDDEN,
+            )
 
         kyc_id = request.data.get('kyc_id')
         kyc_status = request.data.get('status')
@@ -145,9 +147,10 @@ class KYCView(APIView):
 
         if kyc_status:
             if kyc_status not in ['approved', 'rejected']:
-                return CustomResponse({'error': Error.KYC_STATUS_INVALID, 'success': False,
-                                       'message': Error.KYC_STATUS_INVALID},
-                                      status=status.HTTP_400_BAD_REQUEST)
+                return CustomResponse(
+                    {'error': Error.KYC_STATUS_INVALID, 'success': False, 'message': Error.KYC_STATUS_INVALID},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
             kyc_request.status = kyc_status
             kyc_request.reviewed_at = timezone.now()

@@ -1,9 +1,13 @@
-from rest_framework import serializers
 from collections import defaultdict
+
+from rest_framework import serializers
+
 from apps.user_authentication.infrastructure.models import Vendor, VendorServices
+
 
 class VendorServicesInfoSerializer(serializers.ModelSerializer):
     """Serializer for vendor services information tab"""
+
     services = serializers.SerializerMethodField()
 
     class Meta:
@@ -11,8 +15,7 @@ class VendorServicesInfoSerializer(serializers.ModelSerializer):
         fields = ['services', 'service_area', 'description']
 
     def get_services(self, obj):
-        vendor_services = VendorServices.objects.filter(user_id=obj.user_id) \
-            .select_related('category_id', 'subcategory_id')
+        vendor_services = VendorServices.objects.filter(user_id=obj.user_id).select_related('category_id', 'subcategory_id')
 
         category_dict = defaultdict(list)
         for vs in vendor_services:

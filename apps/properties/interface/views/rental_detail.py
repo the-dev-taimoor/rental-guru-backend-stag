@@ -1,12 +1,12 @@
-from .general import GeneralViewSet
+from rest_framework.exceptions import NotFound
+from rest_framework.permissions import IsAuthenticated
 
 from apps.properties.infrastructure.models import Property, RentDetails
 from apps.properties.interface.serializers import RentDetailsSerializer
-from rest_framework.permissions import IsAuthenticated
-
+from common.constants import Error, Success
 from common.utils import CustomResponse
-from common.constants import Success, Error
-from rest_framework.exceptions import NotFound
+
+from .general import GeneralViewSet
 
 
 class RentalDetailViewSet(GeneralViewSet):

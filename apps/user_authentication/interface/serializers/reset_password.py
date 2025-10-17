@@ -1,4 +1,5 @@
 import re
+
 from rest_framework import serializers
 
 
@@ -22,16 +23,16 @@ class ResetPasswordSerializer(serializers.Serializer):
         Validate the new password based on the given criteria.
         """
         if not re.search(r'[A-Z]', value):
-            raise serializers.ValidationError({'password':'Password must contain at least one uppercase letter.'})
+            raise serializers.ValidationError({'password': 'Password must contain at least one uppercase letter.'})
 
         if not re.search(r'[a-z]', value):
-            raise serializers.ValidationError({'password':'Password must contain at least one lowercase letter.'})
+            raise serializers.ValidationError({'password': 'Password must contain at least one lowercase letter.'})
 
         if not re.search(r'[0-9]', value):
-            raise serializers.ValidationError({'password':'Password must contain at least one number.'})
+            raise serializers.ValidationError({'password': 'Password must contain at least one number.'})
 
         if not re.search(r'[@$!%*?&]', value):
-            raise serializers.ValidationError({'password':'Password must contain at least one special character.'})
+            raise serializers.ValidationError({'password': 'Password must contain at least one special character.'})
 
         return value
 

@@ -1,6 +1,8 @@
 from rest_framework import serializers
-from common.utils import get_presigned_url
+
 from apps.user_authentication.infrastructure.models import Vendor
+from common.utils import get_presigned_url
+
 
 class VendorCertificationInfoSerializer(serializers.ModelSerializer):
     """Serializer for vendor certification information tab"""
