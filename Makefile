@@ -111,3 +111,8 @@ lint:
 .PHONY: lint-fix
 lint-fix:
 	ruff check --fix .
+
+# Target to install git hooks using pre-commit to check lint and format issues before commit
+.PHONY: hooks
+hooks:
+	pre-commit install
