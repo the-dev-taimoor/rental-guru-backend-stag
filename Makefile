@@ -64,13 +64,6 @@ collectstatic:
 	$(MANAGE) collectstatic --noinput
 
 # ---------------------------
-# Environment and cleanup
-# ---------------------------
-
-env:
-	@echo "Using Django settings: $(DJANGO_SETTINGS_MODULE)"
-
-# ---------------------------
 # Database utilities
 # ---------------------------
 
@@ -116,3 +109,20 @@ lint-fix:
 .PHONY: hooks
 hooks:
 	pre-commit install
+
+# create env with all env variables
+.PHONY: env
+env:
+	cp .env_example .env
+
+.PHONY: venv
+venv:
+	python -m venv venv
+
+.PHONY: activate-venv
+activate-venv:
+	source venv/bin/activate
+
+.PHONY: deactivate-venv
+deactivate-venv:
+	deactivate

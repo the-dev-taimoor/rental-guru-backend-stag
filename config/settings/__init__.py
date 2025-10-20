@@ -8,6 +8,5 @@ else:
 
 # Apply settings from the chosen class to the global scope
 for setting_name in dir(CurrentSettings):
-    print("setting_name:", setting_name)
     if not setting_name.startswith('__'):
         globals()[setting_name] = getattr(CurrentSettings, setting_name)
