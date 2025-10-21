@@ -12,7 +12,7 @@ from apps.property_management.application.pagination import UnitsPagination
 from apps.property_management.infrastructure.filters import UnitFilter
 from apps.property_management.infrastructure.models import Property, PropertyPhoto, Unit
 from apps.property_management.interface.serializers import UnitSerializer, UnitUpdateSerializer
-from apps.user_authentication.application.permissions import IsKYCApproved, IsUnitOwner
+from apps.user_management.application.permissions import IsKYCApproved, IsUnitOwner
 from common.constants import Error, Success
 from common.utils import CustomResponse
 

@@ -11,7 +11,7 @@ from apps.property_management.infrastructure.models import (
     RentDetails,
     Unit,
 )
-from apps.user_authentication.infrastructure.models import PropertyOwner  # why is a model from other app being used here
+from apps.user_management.infrastructure.models import PropertyOwner  # why is a model from other app being used here
 from common.utils import get_presigned_url
 
 from .cost_fee_retrieve import CostFeeRetrieveSerializer

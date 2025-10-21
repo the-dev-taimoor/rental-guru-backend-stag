@@ -65,7 +65,7 @@ class BaseSettings:
         "rest_framework",
         "rest_framework_simplejwt",
         "rest_framework_simplejwt.token_blacklist",
-        "apps.user_authentication",
+        "apps.user_management",
         "drf_yasg",
         "corsheaders",
         "storages",
@@ -166,7 +166,7 @@ class BaseSettings:
     # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
     DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-    AUTH_USER_MODEL = 'user_authentication.CustomUser'
+    AUTH_USER_MODEL = 'user_management.CustomUser'
 
     EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 

@@ -114,7 +114,7 @@ rental-guru-backend/
 │   ├── urls.py              # Main URL configuration
 │   ├── constants.py         # Application constants
 │   └── utils.py             # Utility functions
-├── user_authentication/      # User management app
+├── user_management/      # User management app
 │   ├── models.py            # User, roles, and profile models
 │   ├── views.py             # Authentication and profile views
 │   ├── serializers.py       # API serializers

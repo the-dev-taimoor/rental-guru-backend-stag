@@ -1,0 +1,25 @@
+from rest_framework import permissions, status
+from rest_framework.exceptions import ValidationError
+from rest_framework.views import APIView
+
+from apps.user_management.infrastructure.models import Role
+from apps.user_management.interface.serializers import SelectRoleSerializer
+from common.constants import Error, Success
+from common.utils import CustomResponse
+
+
+class SelectRoleView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer = SelectRoleSerializer
+    model = Role
+
+    def post(self, request):
+        data = request.data.copy()
+        serializer = self.serializer(data=data)
+        if Role.objects.filter(user_id=request.user, role=data.get('role')).exists():
+            raise ValidationError(Error.ROLE_ALREADY_ASSIGNED.format(data.get('role').replace('_', ' ').title()))
+        if serializer.is_valid(raise_exception=True):
+            data['user_id'] = request.user
+            data['role'] = serializer.validated_data.get('role')
+            Role.objects.create(**data)
+        return CustomResponse({'message': Success.ROLE_ADDED}, status=status.HTTP_201_CREATED)

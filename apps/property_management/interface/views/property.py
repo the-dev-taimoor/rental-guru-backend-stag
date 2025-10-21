@@ -11,7 +11,7 @@ from apps.property_management.application.pagination import PropertiesPagination
 from apps.property_management.infrastructure.filters import PropertyFilter
 from apps.property_management.infrastructure.models import Property
 from apps.property_management.interface.serializers import PropertySerializer
-from apps.user_authentication.application.permissions import IsKYCApproved, IsPropertyOwner
+from apps.user_management.application.permissions import IsKYCApproved, IsPropertyOwner
 from common.constants import Error, Success
 from common.utils import CustomResponse
 
