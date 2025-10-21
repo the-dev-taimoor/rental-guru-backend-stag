@@ -17,7 +17,7 @@ class PropertySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Property
-        fields = '__all__'
+        exclude = ['published_at', 'created_at', 'updated_at', 'other_amenities', 'page_saved']
 
     def create(self, validated_data):
         user = self.context['request'].user
