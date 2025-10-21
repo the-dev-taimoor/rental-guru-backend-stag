@@ -8,7 +8,7 @@ from rest_framework import permissions, status
 from rest_framework.filters import OrderingFilter
 from rest_framework.views import APIView
 
-from apps.properties.infrastructure.models import Property, Unit
+from apps.property_management.infrastructure.models import Property, Unit
 from apps.user_authentication.application.pagination import TenantInvitationPagination
 from apps.user_authentication.infrastructure.models import Agreements, Tenant, TenantInvitation
 from apps.user_authentication.interface.serializers import InvitationAgreementSerializer, TenantInvitationSerializer

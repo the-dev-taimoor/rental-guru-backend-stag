@@ -10,7 +10,7 @@ from rest_framework.parsers import JSONParser
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from apps.properties.infrastructure.models import OwnerInfo
+from apps.property_management.infrastructure.models import OwnerInfo
 from apps.user_authentication.application.services.otp import otp_email
 from apps.user_authentication.infrastructure.models import KYCRequest, PropertyOwner, Tenant, TenantInvitation, Vendor, VendorInvitation
 from apps.user_authentication.interface.serializers import (

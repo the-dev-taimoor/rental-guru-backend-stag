@@ -69,7 +69,7 @@ class BaseSettings:
         "drf_yasg",
         "corsheaders",
         "storages",
-        "apps.properties",
+        "apps.property_management",
     ]
 
     REST_FRAMEWORK = {

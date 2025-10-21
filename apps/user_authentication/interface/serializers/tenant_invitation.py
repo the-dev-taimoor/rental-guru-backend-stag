@@ -27,14 +27,14 @@ class TenantInvitationSerializer(serializers.ModelSerializer):
         assignment_id = attrs.get('assignment_id')
 
         if assignment_type == 'property':
-            from apps.properties.infrastructure.models import Property
+            from apps.property_management.infrastructure.models import Property
 
             try:
                 Property.objects.get(id=assignment_id)
             except Property.DoesNotExist:
                 raise serializers.ValidationError("Property with this ID does not exist.")
         elif assignment_type == 'unit':
-            from apps.properties.infrastructure.models import Unit
+            from apps.property_management.infrastructure.models import Unit
 
             try:
                 Unit.objects.get(id=assignment_id)

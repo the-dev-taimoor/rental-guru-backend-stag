@@ -6,7 +6,7 @@ class IsUnitOwner(permissions.BasePermission):
 
     def has_permission(self, request, view):
         unit_id = view.kwargs.get('pk')
-        from apps.properties.infrastructure.models import Unit
+        from apps.property_management.infrastructure.models import Unit
 
         try:
             unit = Unit.objects.get(id=unit_id)

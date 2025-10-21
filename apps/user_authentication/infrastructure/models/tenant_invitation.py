@@ -56,14 +56,14 @@ class TenantInvitation(models.Model):
     def assigned_object(self):
         """Get the assigned property or unit object"""
         if self.assignment_type == 'property':
-            from apps.properties.infrastructure.models import Property
+            from apps.property_management.infrastructure.models import Property
 
             try:
                 return Property.objects.get(id=self.assignment_id)
             except Property.DoesNotExist:
                 return None
         elif self.assignment_type == 'unit':
-            from apps.properties.infrastructure.models import Unit
+            from apps.property_management.infrastructure.models import Unit
 
             try:
                 return Unit.objects.get(id=self.assignment_id)

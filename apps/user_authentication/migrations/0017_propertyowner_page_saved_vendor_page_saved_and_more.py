@@ -9,7 +9,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("properties", "0031_unit_beds_alter_unit_bedrooms"),
+        ("property_management", "0031_unit_beds_alter_unit_bedrooms"),
         ("user_authentication", "0016_vendorinvitation_expired_at"),
     ]
 
@@ -29,9 +29,7 @@ class Migration(migrations.Migration):
             name="expired_at",
             field=models.DateTimeField(
                 blank=True,
-                default=datetime.datetime(
-                    2025, 7, 28, 15, 9, 4, 413911, tzinfo=datetime.timezone.utc
-                ),
+                default=datetime.datetime(2025, 7, 28, 15, 9, 4, 413911, tzinfo=datetime.timezone.utc),
                 null=True,
             ),
         ),
@@ -305,9 +303,7 @@ class Migration(migrations.Migration):
                 ("agreed", models.BooleanField(default=False)),
                 (
                     "signed_agreement",
-                    models.FileField(
-                        blank=True, null=True, upload_to="tenant_signed_agreements/"
-                    ),
+                    models.FileField(blank=True, null=True, upload_to="tenant_signed_agreements/"),
                 ),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("updated_at", models.DateTimeField(auto_now=True)),
@@ -315,9 +311,7 @@ class Migration(migrations.Migration):
                     "expired_at",
                     models.DateTimeField(
                         blank=True,
-                        default=datetime.datetime(
-                            2025, 7, 28, 15, 9, 4, 414806, tzinfo=datetime.timezone.utc
-                        ),
+                        default=datetime.datetime(2025, 7, 28, 15, 9, 4, 414806, tzinfo=datetime.timezone.utc),
                         null=True,
                     ),
                 ),
@@ -326,7 +320,7 @@ class Migration(migrations.Migration):
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
                         related_name="tenant_assigned_property",
-                        to="properties.property",
+                        to="property_management.property",
                     ),
                 ),
                 (
@@ -339,9 +333,7 @@ class Migration(migrations.Migration):
                 ),
             ],
             options={
-                "unique_together": {
-                    ("email", "tenant_type", "sender", "assigned_property")
-                },
+                "unique_together": {("email", "tenant_type", "sender", "assigned_property")},
             },
         ),
     ]
