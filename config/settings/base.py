@@ -22,7 +22,7 @@ log_file = os.path.join(log_directory, 'error.log')
 class BaseSettings:
     """
     Base Django settings class.
-    Loads environment variables from .env and provides sane defaults.
+    Loads environment variables from .env and provides some defaults.
     """
 
     BASE_DIR = BASE_DIR
@@ -31,13 +31,12 @@ class BaseSettings:
     # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
     # SECURITY WARNING: keep the secret key used in production secret!
-    SECRET_KEY = "django-insecure-2d3u=ajt!$bk*fx(frbafdgc8$6d%(ho-rdv+5c2rzi=-8d21n"
+    SECRET_KEY = get_env_value("DJANGO_SECRET_KEY")
 
     # SECURITY WARNING: don't run with debug turned on in production!
     DEBUG = True
 
     ALLOWED_HOSTS = get_env_value("ALLOWED_ORIGINS").split(',')
-    print("ALLOWED_HOSTS:", ALLOWED_HOSTS)
 
     CSRF_TRUSTED_ORIGINS = get_env_value("CSRF_TRUSTED_ORIGINS").split(',')
 
@@ -190,24 +189,24 @@ class BaseSettings:
     # EMAIL_HOST = 'smtp.gmail.com'
     # EMAIL_PORT = 587
     # EMAIL_USE_TLS = True
-    # EMAIL_HOST_USER = env_values["EMAIL_HOST_USER"]
-    # EMAIL_HOST_PASSWORD = env_values["EMAIL_HOST_PASSWORD"]
-    SITE_DOMAIN = env_values["SITE_DOMAIN"]
-    FRONTEND_DOMAIN = env_values["FRONTEND_DOMAIN"]
+    # EMAIL_HOST_USER = get_env_value("EMAIL_HOST_USER")
+    # EMAIL_HOST_PASSWORD = get_env_value("EMAIL_HOST_PASSWORD")
+    SITE_DOMAIN = get_env_value("SITE_DOMAIN")
+    FRONTEND_DOMAIN = get_env_value("FRONTEND_DOMAIN")
 
     MEDIA_URL = '/media/'
     MEDIA_ROOT = BASE_DIR / 'media'
 
-    AWS_ACCESS_KEY_ID = env_values["AWS_ACCESS_KEY_ID"]
-    AWS_SECRET_ACCESS_KEY = env_values["AWS_SECRET_ACCESS_KEY"]
-    AWS_STORAGE_BUCKET_NAME = env_values["AWS_STORAGE_BUCKET_NAME"]
-    AWS_S3_REGION_NAME = env_values["AWS_S3_REGION_NAME"]
+    AWS_ACCESS_KEY_ID = get_env_value("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = get_env_value("AWS_SECRET_ACCESS_KEY")
+    AWS_STORAGE_BUCKET_NAME = get_env_value("AWS_STORAGE_BUCKET_NAME")
+    AWS_S3_REGION_NAME = get_env_value("AWS_S3_REGION_NAME")
 
-    AWS_S3_CUSTOM_DOMAIN = env_values["AWS_S3_CUSTOM_DOMAIN"]
+    AWS_S3_CUSTOM_DOMAIN = get_env_value("AWS_S3_CUSTOM_DOMAIN")
     AWS_QUERYSTRING_AUTH = True
     AWS_S3_FILE_OVERWRITE = False
     AWS_DEFAULT_ACL = None
 
     DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
 
-    ENV = env_values["ENV"]
+    ENV = get_env_value("ENV")
