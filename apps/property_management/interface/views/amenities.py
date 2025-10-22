@@ -3,7 +3,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
-from apps.property_management.infrastructure.models import Amenities, Property, PropertyAssignedAmenities, PropertyTypeAndAmenity, Unit
+from apps.property_management.infrastructure.models import Amenity, Property, PropertyAssignedAmenity, PropertyTypeAndAmenity, Unit
 from apps.property_management.interface.serializers import PropertyAmenitiesSerializer, PropertySummaryRetrieveSerializer
 from common.constants import Success
 from common.utils import CustomResponse
@@ -35,16 +35,16 @@ class AmenitiesView(GeneralViewSet):
         else:
             unit_obj = None
 
-        PropertyAssignedAmenities.objects.filter(property=property_obj, unit=unit_obj).delete()
+        PropertyAssignedAmenity.objects.filter(property=property_obj, unit=unit_obj).delete()
 
         bulk_list = []
         for sub_id in sub_amenities_ids:
-            sub_obj = get_object_or_404(Amenities, id=sub_id)
+            sub_obj = get_object_or_404(Amenity, id=sub_id)
 
-            pa = PropertyAssignedAmenities(property=property_obj, sub_amenity=sub_obj, unit=unit_obj)
+            pa = PropertyAssignedAmenity(property=property_obj, sub_amenity=sub_obj, unit=unit_obj)
             bulk_list.append(pa)
 
-        PropertyAssignedAmenities.objects.bulk_create(bulk_list)
+        PropertyAssignedAmenity.objects.bulk_create(bulk_list)
 
         unit_id = None
         if unit_obj:
@@ -64,7 +64,7 @@ class AmenitiesView(GeneralViewSet):
     def list(self, request, *args, **kwargs):
         filtered_queryset = self.filter_queryset(self.get_queryset())
         amenity_ids = filtered_queryset.values_list('sub_amenities', flat=True)
-        amenities = Amenities.objects.filter(id__in=amenity_ids)
+        amenities = Amenity.objects.filter(id__in=amenity_ids)
         amenities_dict = {}
         for item in amenities:
             if item.amenity not in amenities_dict:

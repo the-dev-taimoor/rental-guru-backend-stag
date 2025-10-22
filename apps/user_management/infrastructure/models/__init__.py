@@ -1,8 +1,8 @@
-from .agreements import *
+from .agreement import *
 from .custom_user import *
 from .custom_user_manager import *
 from .kyc_request import *
-from .license_and_certificates import *
+from .license_and_certificate import *
 from .property_owner import *
 from .role import *
 from .service_category import *
@@ -11,4 +11,4 @@ from .tenant import *
 from .tenant_invitation import *
 from .vendor import *
 from .vendor_invitation import *
-from .vendor_services import *
+from .vendor_service import *

@@ -2,7 +2,7 @@ from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from apps.property_management.infrastructure.models import CostFee, CostFeesCategory, Property
+from apps.property_management.infrastructure.models import CostFee, CostFeeCategory, Property
 from apps.property_management.interface.serializers import CostFeeRetrieveSerializer, CostFeesCategorySerializer, CostFeeSerializer
 from common.constants import Error, Success
 from common.utils import CustomResponse
@@ -10,7 +10,7 @@ from common.utils import CustomResponse
 
 class CostFeeViewSet(APIView):
     permission_classes = [IsAuthenticated]
-    queryset = CostFeesCategory.objects.all()
+    queryset = CostFeeCategory.objects.all()
     serializer_class = CostFeesCategorySerializer
 
     def post(self, request):
@@ -36,14 +36,14 @@ class CostFeeViewSet(APIView):
             parent_data['property'] = property_
             parent_data['category_name'] = category_name
 
-            existing_category = CostFeesCategory.objects.filter(property=property_, unit=unit, category_name=category_name).first()
+            existing_category = CostFeeCategory.objects.filter(property=property_, unit=unit, category_name=category_name).first()
 
             if existing_category:
                 category = existing_category
             else:
                 serializer = self.serializer_class(data=parent_data)
                 serializer.is_valid(raise_exception=True)
-                category = CostFeesCategory.objects.create(**serializer.validated_data)
+                category = CostFeeCategory.objects.create(**serializer.validated_data)
 
             category_data['category_name'] = category_name
 

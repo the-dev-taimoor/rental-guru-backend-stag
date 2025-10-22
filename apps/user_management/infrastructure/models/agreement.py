@@ -3,7 +3,7 @@ from django.db import models
 from .tenant_invitation import TenantInvitation
 
 
-class Agreements(models.Model):
+class Agreement(models.Model):
     invitation = models.ForeignKey(TenantInvitation, on_delete=models.CASCADE, related_name='agreements')
     lease_agreement = models.FileField(upload_to='tenant_agreements/')
     signed_agreement = models.FileField(upload_to='tenant_signed_agreements/', blank=True, null=True)

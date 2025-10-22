@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.user_management.infrastructure.models import LicenseAndCertificates
+from apps.user_management.infrastructure.models import LicenseAndCertificate
 from common.utils import get_presigned_url, unsnake_case
 
 
@@ -8,7 +8,7 @@ class LicenseAndCertificatesSerializer(serializers.ModelSerializer):
     title = serializers.SerializerMethodField()
 
     class Meta:
-        model = LicenseAndCertificates
+        model = LicenseAndCertificate
         fields = ['id', 'document', 'title']
 
     def to_representation(self, instance):

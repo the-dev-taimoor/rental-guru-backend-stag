@@ -3,7 +3,7 @@ from django.utils import timezone
 from rest_framework import permissions, status
 from rest_framework.views import APIView
 
-from apps.user_management.infrastructure.models import Agreements, TenantInvitation
+from apps.user_management.infrastructure.models import Agreement, TenantInvitation
 from common.constants import Error, Success
 from common.utils import CustomResponse, get_presigned_url
 
@@ -70,7 +70,7 @@ class TenantDetailsByInvitationView(APIView):
     def _get_lease_info(self, invitation):
         """Get lease and property information"""
         lease_agreement_url = None
-        agreement = Agreements.objects.filter(invitation=invitation.id).order_by('-created_at').first()
+        agreement = Agreement.objects.filter(invitation=invitation.id).order_by('-created_at').first()
         if agreement.lease_agreement and agreement.lease_agreement.name:
             lease_agreement_url = get_presigned_url(agreement.lease_agreement.name)
 

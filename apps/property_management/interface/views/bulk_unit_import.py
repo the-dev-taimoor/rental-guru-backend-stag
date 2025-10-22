@@ -11,10 +11,10 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.views import APIView
 
 from apps.property_management.infrastructure.models import (
-    Amenities,
-    CostFeesCategory,
+    Amenity,
+    CostFeeCategory,
     Property,
-    PropertyAssignedAmenities,
+    PropertyAssignedAmenity,
     PropertyDocument,
     PropertyPhoto,
 )
@@ -146,7 +146,7 @@ class BulkUnitImportAPIView(APIView):
                     amenities_ = amenities.get(unit_key)[0]['sub_amenities'].split(',')
                     amenities_list = snake_case([a.strip() for a in amenities_])
                     existing_amenities = (
-                        Amenities.objects.annotate(normalized_sub=Lower(Replace(F("sub_amenity"), Value(" "), Value("_"))))
+                        Amenity.objects.annotate(normalized_sub=Lower(Replace(F("sub_amenity"), Value(" "), Value("_"))))
                         .filter(normalized_sub__in=amenities_list)
                         .values("id", "sub_amenity")
                     )
@@ -158,12 +158,12 @@ class BulkUnitImportAPIView(APIView):
 
                     bulk_list = []
                     for sub_id in sub_amenities_ids:
-                        sub_obj = get_object_or_404(Amenities, id=sub_id)
+                        sub_obj = get_object_or_404(Amenity, id=sub_id)
 
-                        pa = PropertyAssignedAmenities(property=property_instance, sub_amenity=sub_obj, unit=unit_instance)
+                        pa = PropertyAssignedAmenity(property=property_instance, sub_amenity=sub_obj, unit=unit_instance)
                         bulk_list.append(pa)
 
-                    PropertyAssignedAmenities.objects.bulk_create(bulk_list)
+                    PropertyAssignedAmenity.objects.bulk_create(bulk_list)
 
                     unit_instance.other_amenities = other_amenities
                     unit_instance.page_saved = 3
@@ -181,11 +181,11 @@ class BulkUnitImportAPIView(APIView):
                         cost_obj['property'] = property_instance
                         cost_obj['unit'] = unit_instance
                         cost_obj['category_name'] = cost.get('category_name')
-                        category_obj = CostFeesCategory.objects.filter(
+                        category_obj = CostFeeCategory.objects.filter(
                             property=property_instance, unit=unit_instance, category_name=cost.get('category_name')
                         ).first()
                         if not category_obj:
-                            category_obj = CostFeesCategory.objects.create(**cost_obj)
+                            category_obj = CostFeeCategory.objects.create(**cost_obj)
                         cost['category'] = category_obj.id
                         serializer = CostFeeSerializer(data=cost)
                         if not serializer.is_valid():

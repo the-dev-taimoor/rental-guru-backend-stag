@@ -3,7 +3,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from apps.property_management.infrastructure.models import CostFee, CostFeesCategory, Property
+from apps.property_management.infrastructure.models import CostFee, CostFeeCategory, Property
 from apps.property_management.utils import cost_fee_options
 from common.constants import Error, Success
 from common.utils import CustomResponse, NotFound
@@ -26,7 +26,7 @@ class CostFeeTypesView(APIView):
             return CustomResponse({"error": f"Error: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
     def get_filtered_cost_fee_options(self, property_id, unit_id):
-        cost_fee_categories = CostFeesCategory.objects.filter(property_id=property_id, unit_id=unit_id)
+        cost_fee_categories = CostFeeCategory.objects.filter(property_id=property_id, unit_id=unit_id)
 
         existing_fees = set(CostFee.objects.filter(category__in=cost_fee_categories).values_list('fee_name', flat=True))
 

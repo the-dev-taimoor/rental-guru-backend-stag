@@ -7,7 +7,7 @@ from .service_subcategory import ServiceSubCategory
 User = settings.AUTH_USER_MODEL
 
 
-class VendorServices(models.Model):
+class VendorService(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='service_vendor')
     category_id = models.ForeignKey(ServiceCategory, on_delete=models.CASCADE, related_name='service_category')
     subcategory_id = models.ForeignKey(ServiceSubCategory, on_delete=models.CASCADE, related_name='service_subcategory')

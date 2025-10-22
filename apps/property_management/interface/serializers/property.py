@@ -3,7 +3,7 @@ import re
 from django.db.models import Avg
 from rest_framework import serializers
 
-from apps.property_management.infrastructure.models import ListingInfo, Property, PropertyPhoto, RentDetails
+from apps.property_management.infrastructure.models import ListingInfo, Property, PropertyPhoto, RentDetail
 from common.constants import Error
 
 from .property_photo import PropertyPhotoSerializer
@@ -50,11 +50,11 @@ class PropertySerializer(serializers.ModelSerializer):
 
     def get_rent(self, obj):
         if obj.property_type == 'single_family_home':
-            rental_details = RentDetails.objects.filter(property=obj.id).first()
+            rental_details = RentDetail.objects.filter(property=obj.id).first()
             if rental_details:
                 return rental_details.rent
         else:
-            avg_rent = RentDetails.objects.filter(property=obj.id).aggregate(avg_rent=Avg('rent'))['avg_rent']
+            avg_rent = RentDetail.objects.filter(property=obj.id).aggregate(avg_rent=Avg('rent'))['avg_rent']
             return round(avg_rent, 2) if avg_rent is not None else None
         return None
 

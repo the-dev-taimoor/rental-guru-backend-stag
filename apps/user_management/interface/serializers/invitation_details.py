@@ -1,7 +1,7 @@
 from django.utils import timezone
 from rest_framework import serializers
 
-from apps.user_management.infrastructure.models import Agreements
+from apps.user_management.infrastructure.models import Agreement
 from common.utils import get_presigned_url
 
 
@@ -28,7 +28,7 @@ class InvitationDetailsSerializer(serializers.Serializer):
             }
         elif hasattr(instance, 'tenant_type'):  # TenantInvitation
             lease_agreement_url = None
-            agreement = Agreements.objects.filter(invitation=instance.id).order_by('-created_at').first()
+            agreement = Agreement.objects.filter(invitation=instance.id).order_by('-created_at').first()
             if agreement.lease_agreement and agreement.lease_agreement.name:
                 lease_agreement_url = get_presigned_url(agreement.lease_agreement.name)
 

@@ -4,7 +4,7 @@ from .property import Property
 from .unit import Unit
 
 
-class RentDetails(models.Model):
+class RentDetail(models.Model):
     rental_type_by_choices = [
         ('short_term', "Short-Term (Daily/Weekly)"),
         ('long_term', "Long-Term (Monthly/Annual)"),

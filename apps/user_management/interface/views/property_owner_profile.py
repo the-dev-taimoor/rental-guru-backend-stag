@@ -7,7 +7,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.parsers import MultiPartParser
 from rest_framework.views import APIView
 
-from apps.user_management.infrastructure.models import LicenseAndCertificates, PropertyOwner, Role
+from apps.user_management.infrastructure.models import LicenseAndCertificate, PropertyOwner, Role
 from apps.user_management.interface.serializers import LicenseAndCertificatesSerializer, PropertyOwnerProfileSerializer
 from common.constants import Success
 from common.utils import CustomResponse
@@ -51,7 +51,7 @@ class PropertyOwnerProfileView(APIView):
                 if business_license:
                     for d in business_license:
                         if d:
-                            LicenseAndCertificates.objects.create(
+                            LicenseAndCertificate.objects.create(
                                 user_id=request.user, profile_type=self.role, document=d, document_type='business_license'
                             )
 
@@ -67,7 +67,7 @@ class PropertyOwnerProfileView(APIView):
         raise ValidationError(serializer.errors)
 
     def get_certificates(self, request, type_, profile_type):
-        certificates = LicenseAndCertificates.objects.filter(user_id=request.user, document_type=type_, profile_type=profile_type)
+        certificates = LicenseAndCertificate.objects.filter(user_id=request.user, document_type=type_, profile_type=profile_type)
         serializer = LicenseAndCertificatesSerializer(certificates, many=True)
         return serializer.data
 

@@ -3,7 +3,7 @@ from django.utils import timezone
 from rest_framework import permissions, status
 from rest_framework.views import APIView
 
-from apps.user_management.infrastructure.models import Agreements, TenantInvitation
+from apps.user_management.infrastructure.models import Agreement, TenantInvitation
 from apps.user_management.interface.serializers import LeaseManagementSerializer
 from common.constants import Error, Success
 from common.utils import CustomResponse
@@ -83,7 +83,7 @@ class LeaseManagementView(APIView):
                     invitation.save(
                         update_fields=['lease_start_date', 'lease_end_date', 'lease_amount', 'security_deposit', 'agreed', 'updated_at']
                     )
-                    Agreements.objects.create(invitation=invitation, lease_agreement=serializer.validated_data['lease_agreement'])
+                    Agreement.objects.create(invitation=invitation, lease_agreement=serializer.validated_data['lease_agreement'])
 
                 return CustomResponse({"message": Success.LEASE_RENEWED_SUCCESSFULLY}, status=status.HTTP_200_OK)
 

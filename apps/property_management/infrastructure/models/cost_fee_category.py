@@ -4,7 +4,7 @@ from .property import Property
 from .unit import Unit
 
 
-class CostFeesCategory(models.Model):
+class CostFeeCategory(models.Model):
     property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='property_cost_fee_categories')
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name='unit_cost_fee_categories', null=True, default=None)
     category_name = models.CharField(max_length=100)  # e.g., Parking, Utilities, Other Categories

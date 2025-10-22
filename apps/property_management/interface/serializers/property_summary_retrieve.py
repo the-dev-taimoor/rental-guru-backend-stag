@@ -2,13 +2,13 @@ from django.contrib.auth import get_user_model
 
 from apps.property_management.infrastructure.models import (
     CostFee,
-    CostFeesCategory,
+    CostFeeCategory,
     ListingInfo,
     OwnerInfo,
     Property,
-    PropertyAssignedAmenities,
+    PropertyAssignedAmenity,
     PropertyDocument,
-    RentDetails,
+    RentDetail,
     Unit,
 )
 from apps.user_management.infrastructure.models import PropertyOwner  # why is a model from other app being used here
@@ -25,7 +25,7 @@ from .rent_details_retrieve import RentDetailsRetrieveSerializer
 class PropertySummaryRetrieveSerializer:
     @staticmethod
     def get_amenities(property_id, unit_id):
-        sub_amenities = PropertyAssignedAmenities.objects.filter(property=property_id, unit=unit_id).select_related('sub_amenity')
+        sub_amenities = PropertyAssignedAmenity.objects.filter(property=property_id, unit=unit_id).select_related('sub_amenity')
         model = Property
         if unit_id:
             model = Unit
@@ -44,7 +44,7 @@ class PropertySummaryRetrieveSerializer:
 
     @staticmethod
     def get_rental_details(property_id, unit_id):
-        rental_details_instance = RentDetails.objects.filter(property=property_id, unit=unit_id).first()
+        rental_details_instance = RentDetail.objects.filter(property=property_id, unit=unit_id).first()
         return RentDetailsRetrieveSerializer(rental_details_instance).data if rental_details_instance else None
 
     @staticmethod
@@ -55,7 +55,7 @@ class PropertySummaryRetrieveSerializer:
     @staticmethod
     def get_cost_fees(property_id, unit_id):
         cost_fee_data = []
-        cost_category_instances = CostFeesCategory.objects.filter(property=property_id, unit=unit_id)
+        cost_category_instances = CostFeeCategory.objects.filter(property=property_id, unit=unit_id)
         for cost_fee in cost_category_instances:
             cost_fee_obj = {
                 'category_name': cost_fee.category_name,

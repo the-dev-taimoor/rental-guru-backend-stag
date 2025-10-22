@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.property_management.infrastructure.models import RentDetails
+from apps.property_management.infrastructure.models import RentDetail
 from common.constants import Error
 
 
@@ -8,7 +8,7 @@ class RentDetailsSerializer(serializers.ModelSerializer):
     page_saved = serializers.IntegerField(required=True, write_only=True)
 
     class Meta:
-        model = RentDetails
+        model = RentDetail
         fields = '__all__'
 
     def create(self, validated_data):
@@ -27,7 +27,7 @@ class RentDetailsSerializer(serializers.ModelSerializer):
 
         is_update = self.instance is not None
         if not is_update:
-            if RentDetails.objects.filter(property=data['property'], unit=unit).exists():
+            if RentDetail.objects.filter(property=data['property'], unit=unit).exists():
                 raise serializers.ValidationError(Error.RENT_DETAILS_EXISTS)
 
         if data.get('assigned_tenant'):

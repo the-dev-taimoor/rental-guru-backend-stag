@@ -1,10 +1,10 @@
 from django.db import models
 
-from .cost_fees_category import CostFeesCategory
+from .cost_fee_category import CostFeeCategory
 
 
 class CostFee(models.Model):
-    category = models.ForeignKey(CostFeesCategory, on_delete=models.CASCADE, related_name='fees')
+    category = models.ForeignKey(CostFeeCategory, on_delete=models.CASCADE, related_name='fees')
     fee_name = models.CharField(max_length=100)
     payment_frequency_by_choices = [
         ('one_time', "One Time"),

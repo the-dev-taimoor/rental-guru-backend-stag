@@ -1,7 +1,7 @@
 from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAuthenticated
 
-from apps.property_management.infrastructure.models import Property, RentDetails
+from apps.property_management.infrastructure.models import Property, RentDetail
 from apps.property_management.interface.serializers import RentDetailsSerializer
 from common.constants import Error, Success
 from common.utils import CustomResponse
@@ -10,7 +10,7 @@ from .general import GeneralViewSet
 
 
 class RentalDetailViewSet(GeneralViewSet):
-    queryset = RentDetails.objects.all()
+    queryset = RentDetail.objects.all()
     serializer_class = RentDetailsSerializer
     permission_classes = [IsAuthenticated]
 
@@ -21,8 +21,8 @@ class RentalDetailViewSet(GeneralViewSet):
             raise NotFound(Error.PROPERTY_NOT_FOUND)
         unit_id = self.kwargs.get('unit', None)
         try:
-            return RentDetails.objects.get(property_id=property_instance.id, unit_id=unit_id)
-        except RentDetails.DoesNotExist:
+            return RentDetail.objects.get(property_id=property_instance.id, unit_id=unit_id)
+        except RentDetail.DoesNotExist:
             raise NotFound(Error.RENTAL_DETAIL_NOT_FOUND.format('unit' if unit_id else 'property'))
 
     # This update is with 'put' method and property id in url

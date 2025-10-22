@@ -4,7 +4,7 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 
-from apps.user_management.infrastructure.models import LicenseAndCertificates, Role, Vendor
+from apps.user_management.infrastructure.models import LicenseAndCertificate, Role, Vendor
 from apps.user_management.interface.serializers import VendorProfileSerializer
 from common.constants import Success
 from common.utils import CustomResponse
@@ -39,17 +39,17 @@ class VendorProfileView(PropertyOwnerProfileView):
 
                 for d in business_license:
                     if d:
-                        LicenseAndCertificates.objects.create(
+                        LicenseAndCertificate.objects.create(
                             user_id=request.user, profile_type=self.role, document=d, document_type='business_license'
                         )
                 for d in insurance_certificates:
                     if d:
-                        LicenseAndCertificates.objects.create(
+                        LicenseAndCertificate.objects.create(
                             user_id=request.user, profile_type=self.role, document=d, document_type='insurance_certificate'
                         )
                 for d in other_certificates:
                     if d:
-                        LicenseAndCertificates.objects.create(
+                        LicenseAndCertificate.objects.create(
                             user_id=request.user, profile_type=self.role, document=d, document_type='other_certificate'
                         )
 

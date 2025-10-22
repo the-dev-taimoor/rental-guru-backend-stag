@@ -4,7 +4,7 @@ from django.db import models
 User = settings.AUTH_USER_MODEL
 
 
-class LicenseAndCertificates(models.Model):
+class LicenseAndCertificate(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='license_and_certificates_user')
     profile_type = models.CharField(
         max_length=50, choices=[('property_owner', 'Property Owner'), ('vendor', 'Vendor')], blank=True, null=True

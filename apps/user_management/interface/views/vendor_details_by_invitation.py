@@ -8,7 +8,7 @@ from rest_framework import permissions, status
 from rest_framework.parsers import MultiPartParser
 from rest_framework.views import APIView
 
-from apps.user_management.infrastructure.models import LicenseAndCertificates, Vendor, VendorInvitation, VendorServices
+from apps.user_management.infrastructure.models import LicenseAndCertificate, Vendor, VendorInvitation, VendorService
 from apps.user_management.interface.serializers import BulkVendorInviteSerializer
 from common.constants import Error, Success
 from common.utils import CustomResponse, get_presigned_url, send_email_, unsnake_case
@@ -105,7 +105,7 @@ class VendorDetailsByInvitationView(APIView):
 
     def _get_business_license_url(self, vendor):
         data = []
-        licenses = LicenseAndCertificates.objects.filter(user_id=vendor.user_id, profile_type='vendor', document_type='business_license')
+        licenses = LicenseAndCertificate.objects.filter(user_id=vendor.user_id, profile_type='vendor', document_type='business_license')
         for license in licenses:
             cert_data = {
                 'name': unsnake_case(license.document.name.split('/')[-1].split('.')[0]),
@@ -117,7 +117,7 @@ class VendorDetailsByInvitationView(APIView):
     def _get_services_info(self, vendor):
         """Get services information"""
         # Get vendor services
-        vendor_services = VendorServices.objects.filter(user_id=vendor.user_id).select_related('category_id', 'subcategory_id')
+        vendor_services = VendorService.objects.filter(user_id=vendor.user_id).select_related('category_id', 'subcategory_id')
 
         services_dict = defaultdict(list)
         for vs in vendor_services:
@@ -130,7 +130,7 @@ class VendorDetailsByInvitationView(APIView):
     def _get_certification_info(self, vendor):
         """Get certification information"""
         data = []
-        certificates = LicenseAndCertificates.objects.filter(
+        certificates = LicenseAndCertificate.objects.filter(
             user_id=vendor.user_id, profile_type='vendor', document_type='insurance_certificate'
         )
         for certificate in certificates:
@@ -140,7 +140,7 @@ class VendorDetailsByInvitationView(APIView):
             }
             data.append(cert_data)
 
-        certificates = LicenseAndCertificates.objects.filter(
+        certificates = LicenseAndCertificate.objects.filter(
             user_id=vendor.user_id, profile_type='vendor', document_type='other_certificate'
         )
         for certificate in certificates:

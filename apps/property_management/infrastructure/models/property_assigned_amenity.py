@@ -1,14 +1,14 @@
 from django.db import models
 
-from .amenitites import Amenities
+from .amenity import Amenity
 from .property import Property
 from .unit import Unit
 
 
-class PropertyAssignedAmenities(models.Model):
+class PropertyAssignedAmenity(models.Model):
     property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='property_amenities')
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name='unit_amenities', null=True, default=None)
-    sub_amenity = models.ForeignKey(Amenities, on_delete=models.CASCADE, related_name='assigned_sub_amenity')
+    sub_amenity = models.ForeignKey(Amenity, on_delete=models.CASCADE, related_name='assigned_sub_amenity')
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

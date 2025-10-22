@@ -2,7 +2,7 @@ from collections import defaultdict
 
 from rest_framework import serializers
 
-from apps.user_management.infrastructure.models import ServiceSubCategory, Vendor, VendorServices
+from apps.user_management.infrastructure.models import ServiceSubCategory, Vendor, VendorService
 from common.utils import get_presigned_url
 
 
@@ -21,7 +21,7 @@ class VendorProfileSerializer(serializers.ModelSerializer):
         return rep
 
     def get_services(self, obj):
-        vendor_services = VendorServices.objects.filter(user_id=obj.user_id).select_related('category_id', 'subcategory_id')
+        vendor_services = VendorService.objects.filter(user_id=obj.user_id).select_related('category_id', 'subcategory_id')
 
         category_dict = defaultdict(list)
         for vs in vendor_services:
@@ -36,7 +36,7 @@ class VendorProfileSerializer(serializers.ModelSerializer):
         instance = super().create(validated_data)
 
         user = validated_data.get('user_id')
-        VendorServices.objects.filter(user_id=user).delete()
+        VendorService.objects.filter(user_id=user).delete()
 
         for subcat_id in services_offered:
             try:
@@ -44,5 +44,5 @@ class VendorProfileSerializer(serializers.ModelSerializer):
             except ServiceSubCategory.DoesNotExist:
                 continue
 
-            VendorServices.objects.create(user_id=user, category_id=subcategory.category_id, subcategory_id=subcategory)
+            VendorService.objects.create(user_id=user, category_id=subcategory.category_id, subcategory_id=subcategory)
         return instance

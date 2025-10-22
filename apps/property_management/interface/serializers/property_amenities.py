@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.property_management.infrastructure.models import Amenities
+from apps.property_management.infrastructure.models import Amenity
 
 
 class PropertyAmenitiesSerializer(serializers.Serializer):
@@ -15,7 +15,7 @@ class PropertyAmenitiesSerializer(serializers.Serializer):
         Ensure all sub_amenities IDs are valid and belong to existing SubAmenity objects.
         """
         sub_ids = data.get('sub_amenities', [])
-        existing_subs = Amenities.objects.filter(id__in=sub_ids)
+        existing_subs = Amenity.objects.filter(id__in=sub_ids)
         if len(existing_subs) != len(sub_ids):
             invalid_ids = set(sub_ids) - set(existing_subs.values_list('id', flat=True))
             raise serializers.ValidationError(f"Invalid sub_amenity IDs: {invalid_ids}")

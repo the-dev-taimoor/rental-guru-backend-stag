@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.exceptions import NotFound
 
-from apps.property_management.infrastructure.models import Property, PropertyPhoto, RentDetails, Unit
+from apps.property_management.infrastructure.models import Property, PropertyPhoto, RentDetail, Unit
 from common.constants import Error
 from common.utils import snake_case
 
@@ -116,7 +116,7 @@ class UnitSerializer(serializers.ModelSerializer):
         return unit_instance
 
     def get_rent(self, obj):
-        rental_details = RentDetails.objects.filter(unit=obj.id).first()
+        rental_details = RentDetail.objects.filter(unit=obj.id).first()
         if rental_details:
             return rental_details.rent
         return None
@@ -127,7 +127,7 @@ class UnitSerializer(serializers.ModelSerializer):
         return photos_data
 
     def get_tenants(self, obj):
-        rental_details = RentDetails.objects.filter(unit=obj.id).first()
+        rental_details = RentDetail.objects.filter(unit=obj.id).first()
         if rental_details:
             return rental_details.assigned_tenant
         return None

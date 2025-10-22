@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class Amenities(models.Model):
+class Amenity(models.Model):
     amenity = models.CharField(max_length=100)
     sub_amenity = models.CharField(max_length=100)
 

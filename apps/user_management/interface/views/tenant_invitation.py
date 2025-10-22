@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 
 from apps.property_management.infrastructure.models import Property, Unit
 from apps.user_management.application.pagination import TenantInvitationPagination
-from apps.user_management.infrastructure.models import Agreements, Tenant, TenantInvitation
+from apps.user_management.infrastructure.models import Agreement, Tenant, TenantInvitation
 from apps.user_management.interface.serializers import InvitationAgreementSerializer, TenantInvitationSerializer
 from common.constants import Error, Success
 from common.filters import CustomSearchFilter
@@ -161,7 +161,7 @@ class TenantInvitationView(APIView):
                     expired_at=timezone.now() + timedelta(days=5),
                 )
 
-                agreement = Agreements.objects.create(invitation=invitation, lease_agreement=lease_agreement)
+                agreement = Agreement.objects.create(invitation=invitation, lease_agreement=lease_agreement)
 
             email_variables = {
                 'TENANT_FIRST_NAME': first_name,
@@ -261,8 +261,8 @@ class TenantInvitationView(APIView):
             return CustomResponse({"error": Error.INVITATION_NOT_FOUND}, status=status.HTTP_404_NOT_FOUND)
 
         try:
-            agreement = Agreements.objects.get(invitation=invitation_id)
-        except Agreements.DoesNotExist:
+            agreement = Agreement.objects.get(invitation=invitation_id)
+        except Agreement.DoesNotExist:
             return CustomResponse({"error": Error.AGREEMENT_NOT_FOUND}, status=status.HTTP_404_NOT_FOUND)
 
         if invitation.expired_at and invitation.expired_at < timezone.now():
