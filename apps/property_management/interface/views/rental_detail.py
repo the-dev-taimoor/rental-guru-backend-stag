@@ -2,7 +2,7 @@ from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAuthenticated
 
 from apps.property_management.infrastructure.models import Property, RentDetail
-from apps.property_management.interface.serializers import RentDetailsSerializer
+from apps.property_management.interface.serializers import RentDetailSerializer
 from common.constants import Error, Success
 from common.utils import CustomResponse
 
@@ -11,7 +11,7 @@ from .general import GeneralViewSet
 
 class RentalDetailViewSet(GeneralViewSet):
     queryset = RentDetail.objects.all()
-    serializer_class = RentDetailsSerializer
+    serializer_class = RentDetailSerializer
     permission_classes = [IsAuthenticated]
 
     def get_rental_object(self):

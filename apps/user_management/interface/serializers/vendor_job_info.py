@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 
-class VendorJobsInfoSerializer(serializers.Serializer):
+class VendorJobInfoSerializer(serializers.Serializer):
     """Serializer for vendor jobs information tab"""
 
     total_earnings = serializers.DecimalField(max_digits=10, decimal_places=2, default=0)

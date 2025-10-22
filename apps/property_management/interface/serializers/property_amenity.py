@@ -3,7 +3,7 @@ from rest_framework import serializers
 from apps.property_management.infrastructure.models import Amenity
 
 
-class PropertyAmenitiesSerializer(serializers.Serializer):
+class PropertyAmenitySerializer(serializers.Serializer):
     property_id = serializers.IntegerField()
     unit_id = serializers.IntegerField(required=False)
     sub_amenities = serializers.ListField(child=serializers.IntegerField(), allow_empty=True)

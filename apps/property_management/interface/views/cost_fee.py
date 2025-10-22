@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 from apps.property_management.infrastructure.models import CostFee, CostFeeCategory, Property
-from apps.property_management.interface.serializers import CostFeeRetrieveSerializer, CostFeesCategorySerializer, CostFeeSerializer
+from apps.property_management.interface.serializers import CostFeeCategorySerializer, CostFeeRetrieveSerializer, CostFeeSerializer
 from common.constants import Error, Success
 from common.utils import CustomResponse
 
@@ -11,7 +11,7 @@ from common.utils import CustomResponse
 class CostFeeViewSet(APIView):
     permission_classes = [IsAuthenticated]
     queryset = CostFeeCategory.objects.all()
-    serializer_class = CostFeesCategorySerializer
+    serializer_class = CostFeeCategorySerializer
 
     def post(self, request):
         updated_call = False

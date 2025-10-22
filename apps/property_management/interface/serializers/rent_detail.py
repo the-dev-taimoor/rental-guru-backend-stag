@@ -4,7 +4,7 @@ from apps.property_management.infrastructure.models import RentDetail
 from common.constants import Error
 
 
-class RentDetailsSerializer(serializers.ModelSerializer):
+class RentDetailSerializer(serializers.ModelSerializer):
     page_saved = serializers.IntegerField(required=True, write_only=True)
 
     class Meta:

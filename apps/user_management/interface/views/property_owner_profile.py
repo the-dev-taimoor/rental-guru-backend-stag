@@ -8,7 +8,7 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.views import APIView
 
 from apps.user_management.infrastructure.models import LicenseAndCertificate, PropertyOwner, Role
-from apps.user_management.interface.serializers import LicenseAndCertificatesSerializer, PropertyOwnerProfileSerializer
+from apps.user_management.interface.serializers import LicenseAndCertificateSerializer, PropertyOwnerProfileSerializer
 from common.constants import Success
 from common.utils import CustomResponse
 
@@ -68,7 +68,7 @@ class PropertyOwnerProfileView(APIView):
 
     def get_certificates(self, request, type_, profile_type):
         certificates = LicenseAndCertificate.objects.filter(user_id=request.user, document_type=type_, profile_type=profile_type)
-        serializer = LicenseAndCertificatesSerializer(certificates, many=True)
+        serializer = LicenseAndCertificateSerializer(certificates, many=True)
         return serializer.data
 
     def patch(self, request):

@@ -2,8 +2,8 @@ from .bulk_unit_import import *
 from .calendar_slot import *
 from .calendar_slot_list import *
 from .cost_fee import *
+from .cost_fee_category import *
 from .cost_fee_retrieve import *
-from .cost_fees_category import *
 from .document_create import *
 from .document_retrieve import *
 from .listing_info import *
@@ -12,13 +12,13 @@ from .listing_info_update import *
 from .owner_info import *
 from .owner_info_retrieve import *
 from .property import *
-from .property_amenities import *
+from .property_amenity import *
 from .propertY_document import *
 from .property_photo import *
 from .property_retrieve import *
 from .property_summary_retrieve import *
-from .rent_details import *
-from .rent_details_retrieve import *
+from .rent_detail import *
+from .rent_detail_retrieve import *
 from .unit import *
 from .unit_retrieve import *
 from .unit_update import *

@@ -5,7 +5,7 @@ from apps.user_management.infrastructure.models import Agreement
 from common.utils import get_presigned_url
 
 
-class InvitationDetailsSerializer(serializers.Serializer):
+class InvitationDetailSerializer(serializers.Serializer):
     """
     Unified serializer for both vendor and tenant invitation details.
     Returns invitation information without requiring authentication.

@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 
 from apps.user_management.infrastructure.models import TenantInvitation, VendorInvitation
-from apps.user_management.interface.serializers import InvitationAcceptanceSerializer, InvitationDetailsSerializer
+from apps.user_management.interface.serializers import InvitationAcceptanceSerializer, InvitationDetailSerializer
 from common.constants import Error, Success
 from common.utils import CustomResponse
 
@@ -58,7 +58,7 @@ class InvitationDetailsView(APIView):
         if invitation.expired_at and invitation.expired_at < timezone.now():
             return CustomResponse({"error": Error.INVITATION_EXPIRED}, status=status.HTTP_400_BAD_REQUEST)
 
-        serializer = InvitationDetailsSerializer(invitation)
+        serializer = InvitationDetailSerializer(invitation)
 
         return CustomResponse({"message": Success.INVITATION_DETAILS_RETRIEVED, "data": serializer.data}, status=status.HTTP_200_OK)
 

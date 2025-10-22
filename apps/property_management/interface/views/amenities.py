@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
 from apps.property_management.infrastructure.models import Amenity, Property, PropertyAssignedAmenity, PropertyTypeAndAmenity, Unit
-from apps.property_management.interface.serializers import PropertyAmenitiesSerializer, PropertySummaryRetrieveSerializer
+from apps.property_management.interface.serializers import PropertyAmenitySerializer, PropertySummaryRetrieveSerializer
 from common.constants import Success
 from common.utils import CustomResponse
 
@@ -14,7 +14,7 @@ from .general import GeneralViewSet
 class AmenitiesView(GeneralViewSet):
     permission_classes = [IsAuthenticated]
     queryset = PropertyTypeAndAmenity.objects.all()
-    serializer_class = PropertyAmenitiesSerializer
+    serializer_class = PropertyAmenitySerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['property_type']
 

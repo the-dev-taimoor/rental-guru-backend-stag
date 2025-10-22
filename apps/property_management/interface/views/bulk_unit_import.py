@@ -21,7 +21,7 @@ from apps.property_management.infrastructure.models import (
 from apps.property_management.interface.serializers import (
     BulkUnitImportSerializer,
     CostFeeSerializer,
-    RentDetailsSerializer,
+    RentDetailSerializer,
     UnitSerializer,
 )
 from common.constants import Error, Success
@@ -119,7 +119,7 @@ class BulkUnitImportAPIView(APIView):
                 detail['unit'] = unit_instance.id
                 detail['property'] = property_instance.id
                 detail['page_saved'] = 2
-                serializer = RentDetailsSerializer(data=detail)
+                serializer = RentDetailSerializer(data=detail)
                 if not serializer.is_valid():
                     validation_error = ValidationError(serializer.errors)
 

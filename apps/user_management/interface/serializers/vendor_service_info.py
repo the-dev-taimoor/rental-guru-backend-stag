@@ -5,7 +5,7 @@ from rest_framework import serializers
 from apps.user_management.infrastructure.models import Vendor, VendorService
 
 
-class VendorServicesInfoSerializer(serializers.ModelSerializer):
+class VendorServiceInfoSerializer(serializers.ModelSerializer):
     """Serializer for vendor services information tab"""
 
     services = serializers.SerializerMethodField()

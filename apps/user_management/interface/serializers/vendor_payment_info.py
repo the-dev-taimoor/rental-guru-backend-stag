@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 
-class VendorPaymentsInfoSerializer(serializers.Serializer):
+class VendorPaymentInfoSerializer(serializers.Serializer):
     """Serializer for vendor payments information tab"""
 
     payment_method = serializers.CharField(default="Not Set")

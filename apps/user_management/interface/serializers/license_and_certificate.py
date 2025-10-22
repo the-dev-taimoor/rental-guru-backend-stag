@@ -4,7 +4,7 @@ from apps.user_management.infrastructure.models import LicenseAndCertificate
 from common.utils import get_presigned_url, unsnake_case
 
 
-class LicenseAndCertificatesSerializer(serializers.ModelSerializer):
+class LicenseAndCertificateSerializer(serializers.ModelSerializer):
     title = serializers.SerializerMethodField()
 
     class Meta:

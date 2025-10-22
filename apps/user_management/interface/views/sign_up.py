@@ -14,7 +14,7 @@ from apps.property_management.infrastructure.models import OwnerInfo
 from apps.user_management.application.services.otp import otp_email
 from apps.user_management.infrastructure.models import KYCRequest, PropertyOwner, Tenant, TenantInvitation, Vendor, VendorInvitation
 from apps.user_management.interface.serializers import (
-    InvitationDetailsSerializer,
+    InvitationDetailSerializer,
     PropertyOwnerProfileSerializer,
     TenantProfileSerializer,
     UserSerializer,
@@ -62,7 +62,7 @@ class SignupView(APIView):
                 pass
         try:
             vendor_invitations = VendorInvitation.objects.get(email=user.email, accepted=True)
-            data_ = InvitationDetailsSerializer(vendor_invitations).data
+            data_ = InvitationDetailSerializer(vendor_invitations).data
             data_['role'] = 'vendor'
             invitations.append(data_)
         except Exception as e:
@@ -70,7 +70,7 @@ class SignupView(APIView):
             pass
         try:
             tenant_invitations = TenantInvitation.objects.get(email=user.email, accepted=True)
-            data_ = InvitationDetailsSerializer(tenant_invitations).data
+            data_ = InvitationDetailSerializer(tenant_invitations).data
             data_['role'] = 'tenant'
             invitations.append(data_)
         except Exception as e:

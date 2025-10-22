@@ -18,7 +18,7 @@ from .cost_fee_retrieve import CostFeeRetrieveSerializer
 from .document_retrieve import DocumentRetrieveSerializer
 from .listing_info_retrieve import ListingInfoRetrieveSerializer
 from .owner_info_retrieve import OwnerInfoRetrieveSerializer
-from .rent_details_retrieve import RentDetailsRetrieveSerializer
+from .rent_detail_retrieve import RentDetailRetrieveSerializer
 
 
 #  this doesnt look a a proper serializer, look into it
@@ -45,7 +45,7 @@ class PropertySummaryRetrieveSerializer:
     @staticmethod
     def get_rental_details(property_id, unit_id):
         rental_details_instance = RentDetail.objects.filter(property=property_id, unit=unit_id).first()
-        return RentDetailsRetrieveSerializer(rental_details_instance).data if rental_details_instance else None
+        return RentDetailRetrieveSerializer(rental_details_instance).data if rental_details_instance else None
 
     @staticmethod
     def get_listing_info(property_id):

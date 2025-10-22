@@ -5,21 +5,21 @@ from apps.user_management.infrastructure.models import VendorInvitation
 from .vendor_basic_info import VendorBasicInfoSerializer
 from .vendor_business_info import VendorBusinessInfoSerializer
 from .vendor_certification_info import VendorCertificationInfoSerializer
-from .vendor_jobs_info import VendorJobsInfoSerializer
-from .vendor_payments_info import VendorPaymentsInfoSerializer
-from .vendor_services_info import VendorServicesInfoSerializer
+from .vendor_job_info import VendorJobInfoSerializer
+from .vendor_payment_info import VendorPaymentInfoSerializer
+from .vendor_service_info import VendorServiceInfoSerializer
 
 
-class VendorDetailsByInvitationSerializer(serializers.Serializer):
+class VendorDetailByInvitationSerializer(serializers.Serializer):
     """Main serializer that combines all vendor information tabs"""
 
     invitation_info = serializers.SerializerMethodField()
     basic_info = VendorBasicInfoSerializer(read_only=True)
     business_info = VendorBusinessInfoSerializer(read_only=True)
-    services_info = VendorServicesInfoSerializer(read_only=True)
+    services_info = VendorServiceInfoSerializer(read_only=True)
     certification_info = VendorCertificationInfoSerializer(read_only=True)
-    jobs_info = VendorJobsInfoSerializer(read_only=True)
-    payments_info = VendorPaymentsInfoSerializer(read_only=True)
+    jobs_info = VendorJobInfoSerializer(read_only=True)
+    payments_info = VendorPaymentInfoSerializer(read_only=True)
 
     def get_invitation_info(self, obj):
         invitation = obj.get('invitation')
