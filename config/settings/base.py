@@ -72,6 +72,11 @@ class BaseSettings:
         "apps.property_management",
     ]
 
+    MIGRATION_MODULES = {
+        'property_management': 'apps.property_management.infrastructure.migrations',
+        'user_management': 'apps.user_management.infrastructure.migrations',
+    }
+
     REST_FRAMEWORK = {
         'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework_simplejwt.authentication.JWTAuthentication',),
         'EXCEPTION_HANDLER': 'common.utils.custom_exception_handler',
