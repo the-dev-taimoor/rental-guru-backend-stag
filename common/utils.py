@@ -3,7 +3,6 @@ import os
 import tempfile
 from urllib.parse import urlparse
 
-import boto3
 import requests
 from django.conf import settings
 from django.core.files import File
@@ -15,6 +14,7 @@ from rest_framework.response import Response as DRFResponse
 from rest_framework.views import exception_handler, status
 from rest_framework_simplejwt.exceptions import InvalidToken
 
+from apps.shared.infrastructure.services.s3_service import S3Service
 from common.constants import Error, email_templates
 
 logger = logging.getLogger('django')
@@ -161,14 +161,9 @@ def get_presigned_url(key, expiration=3600, download=False, filename=None):
     if key.startswith("http") or key.startswith("https"):
         return key
 
-    s3 = boto3.client(
-        's3',
-        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-        region_name=settings.AWS_S3_REGION_NAME,
-    )
+    s3 = S3Service()  # this reuses the same singleton instance
 
-    params = {'Bucket': settings.AWS_STORAGE_BUCKET_NAME, 'Key': key}
+    params = {'Bucket': settings.AWS_S3_BUCKET_NAME, 'Key': key}
 
     # Add content disposition header to force download if requested
     if download:

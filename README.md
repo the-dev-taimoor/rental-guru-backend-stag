@@ -193,8 +193,8 @@ rental-guru-backend/
    # AWS S3 Configuration (Optional)
    AWS_ACCESS_KEY_ID=your_access_key
    AWS_SECRET_ACCESS_KEY=your_secret_key
-   AWS_STORAGE_BUCKET_NAME=your_bucket_name
-   AWS_S3_REGION_NAME=us-east-1
+   AWS_S3_BUCKET_NAME=your_bucket_name
+   AWS_DEFAULT_REGION=us-east-1
 
    # Superuser Configuration (Optional)
    SUPERUSER_EMAIL=admin@example.com

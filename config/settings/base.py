@@ -69,6 +69,7 @@ class BaseSettings:
         "corsheaders",
         "storages",
         "apps.property_management",
+        "apps.shared",
     ]
 
     MIGRATION_MODULES = {
@@ -199,10 +200,10 @@ class BaseSettings:
 
     AWS_ACCESS_KEY_ID = get_env_value("AWS_ACCESS_KEY_ID")
     AWS_SECRET_ACCESS_KEY = get_env_value("AWS_SECRET_ACCESS_KEY")
-    AWS_STORAGE_BUCKET_NAME = get_env_value("AWS_STORAGE_BUCKET_NAME")
-    AWS_S3_REGION_NAME = get_env_value("AWS_S3_REGION_NAME")
+    AWS_DEFAULT_REGION = get_env_value("AWS_DEFAULT_REGION")
+    AWS_S3_BUCKET_NAME = get_env_value("AWS_S3_BUCKET_NAME")
+    AWS_S3_BASE_URL = f"https://{AWS_S3_BUCKET_NAME}.s3.{AWS_DEFAULT_REGION}.amazonaws.com"
 
-    AWS_S3_CUSTOM_DOMAIN = get_env_value("AWS_S3_CUSTOM_DOMAIN")
     AWS_QUERYSTRING_AUTH = True
     AWS_S3_FILE_OVERWRITE = False
     AWS_DEFAULT_ACL = None
