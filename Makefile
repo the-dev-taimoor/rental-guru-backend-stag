@@ -94,6 +94,7 @@ install-deps:
 .PHONY: format
 format:
 	black . --preview
+	ruff check --fix
 
 # Target to check code using ruff
 .PHONY: lint

@@ -1,4 +1,4 @@
-from .amenities import *
+from .amenity import *
 from .bulk_unit_import import *
 from .calendar_slot import *
 from .cost_fee import *
@@ -8,8 +8,8 @@ from .general import *
 from .listing_info import *
 from .property import *
 from .property_document import *
-from .property_document_2 import *
 from .property_document_types import *
+from .property_documents import *
 from .property_metrics import *
 from .property_owner import *
 from .property_retrieve import *

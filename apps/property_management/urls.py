@@ -2,16 +2,16 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from apps.property_management.interface.views import (
-    AmenitiesView,
+    AmenityView,
     BulkUnitImportAPIView,
     CalendarSlotViewSet,
     CostFeeTypesView,
     CostFeeViewSet,
     DeleteAllPropertiesView,
     ListingInfoViewSet,
+    PropertyDocumentsViewSet,
     PropertyDocumentTypesView,
     PropertyDocumentViewSet,
-    PropertyDocumentViewSet2,
     PropertyMetricsViewSet,
     PropertyOwnerViewSet,
     PropertyRetrieveViewSet,
@@ -32,7 +32,7 @@ router.register(r'detail', PropertyViewSet, basename='detail')
 router.register(r'top-listings', TopListingsViewSet, basename='top_listings')  #
 router.register(r'listing', ListingInfoViewSet, basename='listing')
 router.register(r'rental', RentalDetailViewSet, basename='rental')
-router.register(r'amenities', AmenitiesView, basename='amenities')
+router.register(r'amenities', AmenityView, basename='amenities')
 router.register(r'document', PropertyDocumentViewSet, basename='document')
 router.register(r'availability', CalendarSlotViewSet, basename='availability')
 
@@ -40,8 +40,8 @@ router.register(r'unit', UnitInfoViewSet, basename='unit')
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('documents/', PropertyDocumentViewSet2.as_view(), name='upload_document'),
-    path('documents/<int:id>/', PropertyDocumentViewSet2.as_view(), name='delete_document'),
+    path('documents/', PropertyDocumentsViewSet.as_view(), name='upload_document'),
+    path('documents/<int:id>/', PropertyDocumentsViewSet.as_view(), name='delete_document'),
     path(r'document-types/', PropertyDocumentTypesView.as_view(), name='document_types'),
     path(r'cost-fee-types/', CostFeeTypesView.as_view(), name='cost_fee_types'),
     path(r'units-bulk-import/', BulkUnitImportAPIView.as_view(), name='units_bulk_import'),

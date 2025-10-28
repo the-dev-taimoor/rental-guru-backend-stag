@@ -22,7 +22,7 @@ from common.constants import Error, Success
 from common.utils import CustomResponse
 
 
-class PropertyDocumentViewSet2(APIView):
+class PropertyDocumentsViewSet(APIView):
     serializer_class = DocumentCreateSerializer
     pagination_class = DocumentsPagination
     permission_classes = [IsAuthenticated]

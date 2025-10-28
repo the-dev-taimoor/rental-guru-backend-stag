@@ -11,7 +11,7 @@ from common.utils import CustomResponse
 from .general import GeneralViewSet
 
 
-class AmenitiesView(GeneralViewSet):
+class AmenityView(GeneralViewSet):
     permission_classes = [IsAuthenticated]
     queryset = PropertyTypeAndAmenity.objects.all()
     serializer_class = PropertyAmenitySerializer
