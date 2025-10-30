@@ -163,15 +163,7 @@ def get_presigned_url(key, expiration=3600, download=False, filename=None):
 
     s3 = S3Service()  # this reuses the same singleton instance
 
-    params = {'Bucket': settings.AWS_S3_BUCKET_NAME, 'Key': key}
-
-    # Add content disposition header to force download if requested
-    if download:
-        # Use provided filename or extract from key
-        download_filename = filename or key.split('/')[-1]
-        params['ResponseContentDisposition'] = f'attachment; filename="{download_filename}"'
-
-    url = s3.generate_presigned_url('get_object', Params=params, ExpiresIn=expiration)
+    url = s3.generate_presigned_url(key=key, expiration=expiration, download=download, filename=filename)
     return url
 
 
